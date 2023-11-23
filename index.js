@@ -33,7 +33,8 @@ let bgBox, bgCircles, bgLogo;
 
 let appearance, difficulty, escapeTurns, credits, degrees;
 
-let click1Sound, click2Sound, click3Sound, click4Sound, encounterSound, correctSound, wrongSound, getObjSound, getCreditSound;
+let click1Sound, click2Sound, click3Sound, click4Sound, correctSound, wrongSound, getObjSound, getCreditSound;
+// let encounterSound
 
 // 管理者調整
 function adjustment() {
@@ -326,7 +327,7 @@ function objMarkClick(placedMark) {
     setTimeout(function() {
         focusImg.classList.add("bounce");
     }, 450);
-    encounterSound.play();
+    // encounterSound.play();
 };
 
 // ログがaミリ秒後にbミリ秒間だけ表示
@@ -954,7 +955,7 @@ function initFunc() {
     click2Sound = document.getElementById("click2Sound");
     click3Sound = document.getElementById("click3Sound");
     click4Sound = document.getElementById("click4Sound");
-    encounterSound = document.getElementById("encounterSound");
+    // encounterSound = document.getElementById("encounterSound");
     correctSound = document.getElementById("correctSound");
     wrongSound = document.getElementById("wrongSound");
     getObjSound = document.getElementById("getObjSound");
