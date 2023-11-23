@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>京大GO</title>
+
+    <link rel="stylesheet" href="./style.css">
+    <script src="./index.js"></script>
+</head>
+<body>
+    <img id="moveButton" class="move-button" src="./imgs/others/book.png" draggable="false">
+
+    <!-- ここからスタート画面 -->
+    <div id="startPart" class="start-part">
+        <div id="openingScene" class="opening-scene">
+            <p id="firstPage" class="first-page">
+                設定でブラウザの位置情報の<br>
+                使用を許可してください
+            </p>
+            <img id="colorsLogo" class="colors-logo" src="./imgs/others/colorsLogo.jpg">
+        </div>
+        <img class="start-bg" src="./imgs/backgrounds/start.png" draggable="false">
+        <div class="form-box">
+            <img id="startImg" class="start-img" src="./imgs/others/defaultIcon.jpg">
+            <input id="startInput" class="start-input" type="file" accept="image/*" onchange="displayUserImg(event)">
+            <div class="start-ring"></div>
+            <input id="startNameInput" class="start-name-input" type="text" placeholder="名前を入力(10字以内)">
+            <p id="startAnnounce" class="start-announce">名前を入力してください</p>
+            <img id="startButton" class="start-button" src="./imgs/others/kyodaiGoLogo.jpg">
+        </div>
+    </div>
+    <!-- ここまでスタート画面 -->
+
+    <!-- ここからマップ -->
+    <div id="mapPart" class="map-part">
+        <div id="map" class="map">
+        </div>
+        <img id="profileButton" class="profile-button" src="./imgs/others/defaultIcon.jpg">
+        <div id="battle" class="battle">
+            <img class="battle-bg" src="./imgs/backgrounds/2.JPG" draggable="false">
+            <img id="escapeButton" class="escape-button" src="./imgs/others/escape3.png" draggable="false">
+            <img id="focusImg" class="focus-img" src="" draggable="false">
+            <p id="encounterLog" class="encounter-log"></p>
+            <div id="quizDiv" class="quiz-div">
+                <p id="question" class="question"></p>
+                <p id="opt1" class="opt1"></p>
+                <p id="opt2" class="opt2"></p>
+                <p id="opt3" class="opt3"></p>
+                <p id="opt4" class="opt4"></p>
+            </div>
+            
+            <div id="quizResult" class="quiz-result">
+                <div id="shape" class="shape"></div>
+            </div>
+        </div>
+
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBHd-1LFAVCD7cDLYck46D9jYCm_nF8lQ8&callback=initFunc&map_ids=206221e9066e4473&libraries=marker,geometry" async></script>
+    </div>
+    <!-- ここまでマップ -->
+
+    <!-- ここからプロフィール -->
+    <div id="profilePart" class="profile-part">
+        <a id="inquery" class="inquery" href="https://docs.google.com/forms/d/e/1FAIpQLSc-umQL3eSEX6Qm_mwpKBDVzn_y7BYEaeGL3ziwSUPZP5rYdw/viewform?usp=sf_link">運営への問い合わせ</a>
+        <div id="editButton" class="edit-button">
+            <img id="editImg" class="edit-img" src="./imgs/others/setting.PNG">
+        </div>
+        <img id="profileImg" class="profile-img" src="./imgs/others/defaultIcon.jpg">
+        <input id="profileInput" class="profile-input" type="file" accept="image/*" onchange="displayUserImg(event)">
+        <div class="profile-ring"></div>
+        <p id="profileNameText" class="profile-name profile-name-text"></p>
+        <input id="profileNameInput" class="profile-name profile-name-input" type="text" placeholder="名前を入力(10字以内)">
+        <p id="profileAnnounce" class="profile-announce">名前を入力してください</p>
+        <p id="degree" class="degree"></p>
+        <meter id="creditGage" class="credit-gage" min="0" max="" value=""></meter>
+        <p id="creditRate" class="credit-rate"></p>
+    </div>
+    <!-- ここまでプロフィール -->
+
+    <!-- ここから図鑑 -->
+    <div id="bookPart" class="book-part">
+        <h1 class="book-title">図鑑</h1>
+        <p id="bookCounter" class="book-counter"></p>
+        <div class="book">
+            <ul class="tab-menu">
+                <li id="charaTab" class="chara-tab is-active">キャラクター</li>
+                <li id="tatekanTab" class="tatekan-tab">タテカン</li>
+            </ul>
+            <div class="list-box">
+                <div id="charaListBox" class="chara-list-box">
+                    <table id="charaList" class="chara-list"></table>
+                </div>
+                <div id="tatekanListBox" class="tatekan-list-box">
+                    <table id="tatekanList" class="tatekan-list"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ここまで図鑑 -->
+
+    <!-- ここからカード -->
+    <div id="cardPart" class="card-part">
+        <img id="bgLogo" class="bg-logo" src="./imgs/others/logo.png" draggable="false">
+        <div id="bgBox" class="bg-box" >
+            <ul id="bgCircles" class="bg-circles">
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+            </ul>
+        </div>
+        <div id="charaCard" class="card">
+            <div class="img-box">
+                <img id="charaImg" class="chara-img" src="" draggable="false">
+                <img id="badgeImg" class="badge-img" src="" draggable="false">
+            </div>
+            <p id="charaName" class="name"></p>
+            <p id="charaDesc" class="desc"></p>
+            <p id="type" class="type"></p>
+            <p id="detail" class="detail"></p>
+        </div>
+        <div id="tatekanCard" class="card">
+            <div class="img-box">
+                <img id="tatekanImg" class="tatekan-img" src="" draggable="false">
+            </div>
+            <p id="tatekanName" class="name"></p>
+            <p id="tatekanDetail" class="detail"></p>
+        </div>
+    </div>
+    <!-- ここまでカード -->
+
+    <!-- ここから効果音 -->
+    <audio id="click1Sound" src="./sounds/click1.mp3"></audio>
+    <audio id="click2Sound" src="./sounds/click2.mp3"></audio>
+    <audio id="click3Sound" src="./sounds/click3.mp3"></audio>
+    <audio id="click4Sound" src="./sounds/click4.mp3"></audio>
+    <audio id="encounterSound" src="./sounds/encounter.mp3" volume="0.1"></audio>
+    <audio id="correctSound" src="./sounds/correct.mp3"></audio>
+    <audio id="wrongSound" src="./sounds/wrong.mp3"></audio>
+    <audio id="getObjSound" src="./sounds/getObj.mp3"></audio>
+    <audio id="getCreditSound" src="./sounds/getCredit.mp3"></audio>
+    <!-- ここまで効果音 -->
+    
+</body>
+</html>
