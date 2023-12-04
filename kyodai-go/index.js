@@ -15,7 +15,7 @@ let profileButton, escapeButton, focusImg, encounterLog, quizDiv;
 let question, opt1, opt2, opt3, opt4, quizResult;
 
 let editButton;
-let profileImg, profileNameText, profileNameInput;
+let profileImg, profileNameText, profileNameInput;ああ
 let creditNum = 0;
 let myDegree;
 
