@@ -82,7 +82,7 @@
             "question": "森のバターとも言われるあの果物の英語の正しい綴りは？",
             "options": ["Avocado", "Abocado", "Avogado", "Abogado"]
         },{
-            "question": "次のうち、黄金比を表す値として正しいものはどれか？",
+            "question": "次のうち、黄金数を表す値として正しいものはどれか？",
             "options": ["(1+√5)/2", "e/2", "1+√3", "√2+√3"]
         },{
             "question": "次のうち、セブンイレブンのロゴの表記として正しいものはどれか？",
@@ -232,8 +232,8 @@
             "question": "握手券などの特典をつけてをCD売る商法を何商法というか？",
             "options": ["AKB商法", "モー娘商法", "乃木坂商法", "SMAP商法"]
         },{
-            "question": "男は深さ30メートルの井戸に落ちてしまった。男は1時間ごとに3m登るが、その直後に2mずり落ちてしまう。\n男が井戸から脱出するには何時間かかるか？",
-            "options": ["8時間", "29時間", "30時間", "27時間"]
+            "question": "男は深さ30mの井戸に落ちてしまった。男は1時間ごとに3m登るが、その直後に2mずり落ちてしまう。\n男が井戸から脱出するには何時間かかるか？",
+            "options": ["28時間", "29時間", "30時間", "27時間"]
         }
     ],
     "B": [
@@ -367,7 +367,7 @@
             "question": "7^2023の一の位は？",
             "options": ["3", "1", "7", "9"]
         },{
-            "question": "James while John had had had had had had had had had had had a better effect on the teacherという文は、句読点を適切な位置に取ることで、文法的に正しく意味の通る文章になるが、このときピリオドは何番目のhadの後ろに来るか？",
+            "question": "James while John had had had had had had had had had had had a better effect on the teacherという文は、句読点と引用符を適切な位置に取ることで、文法的に正しく意味の通る文章になるが、このときピリオドは何番目のhadの後ろに来るか？",
             "options": ["7", "3", "6", "9"]
         }
     ],

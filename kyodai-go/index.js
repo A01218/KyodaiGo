@@ -6,6 +6,7 @@ let startButton;
 let gmap, mark;
 let currentZoom = 19;
 let myLat, myLng, myPos;
+let mapInterval;
 let placedMarks = [];
 
 let mapPartDisplay;
@@ -89,45 +90,58 @@ function adjustment() {
         },
     };
     degrees = {
-        bachelor: 30,
-        master: 10,
-        doctor: 5,
+        bachelor: 140,
+        master: 30,
+        doctor: 20,
     };
 };
 
 // キャラとタテカンとクイズの情報をjsonファイルから入手
-function loadCharas() {
+(function() {
     const req = new XMLHttpRequest();                 
     req.addEventListener("readystatechange", () => {        
         if(req.readyState === 4 && req.status === 200) {    
-            charas = JSON.parse(req.responseText);        
-        }
+            charas = JSON.parse(req.responseText);
+            allCharas = [...charas.Lv1, ...charas.Lv2, ...charas.Lv3, ...charas.LvLegend];
+            console.log("jsonファイルからのキャラの情報の取得が完了");
+            initFunc();
+        }else {
+            console.error("jsonファイルからのキャラの情報の取得に失敗");
+        };
     });
     req.open("GET", "charas.json", true);               
     req.send();
-};
+})();
 
-function loadTatekans() {
+(function() {
     const req = new XMLHttpRequest();                 
     req.addEventListener("readystatechange", () => {        
         if(req.readyState === 4 && req.status === 200) {    
             tatekans = JSON.parse(req.responseText);        
-        }
+            console.log("jsonファイルからのタテカンの情報の取得が完了");
+            initFunc();
+        }else {
+            console.error("jsonファイルからのタテカンの情報の取得に失敗");
+        };
     });
     req.open("GET", "tatekans.json", true);               
     req.send();
-};
+})();
 
-function loadQuizzes() {
+(function() {
     const req = new XMLHttpRequest();                 
     req.addEventListener("readystatechange", () => {        
         if(req.readyState === 4 && req.status === 200) {    
             quizzes = JSON.parse(req.responseText);        
-        }
+            console.log("jsonファイルからのクイズの情報の取得が完了");
+            initFunc();
+        }else {
+            console.error("jsonファイルからのクイズの情報の取得に失敗");
+        };
     });
     req.open("GET", "quizzes.json", true);               
     req.send();    
-};
+})();
 
 // オープニングシーンを開始
 function startOpening() {
@@ -310,24 +324,57 @@ function objMarkClick(placedMark) {
     correctAns = 0;
     wrongAns = 0;
     moveButton.style.display = "none";
-    escapeButton.style.display = "flex";
-    battleDiv.style.display = "flex";
-    quizReload();
-    if(identifyObj(focusedObj)[0] === "chara") {
-        focusImg.src = "./imgs/charas/" + focusedObj.img;
-        encounterLog.innerText = "野生の " + focusedObj.name + " が現れた!";
-    }else if(identifyObj(focusedObj)[0] === "tatekan") {
-        focusImg.src = "./imgs/tatekans/" + focusedObj.img;
-        encounterLog.innerText = focusedObj.name + " を見つけた!";
-        setTimeout(function() {
-            getObjSound.play();
-        }, 1000);
+    profileButton.style.display = "none";
+    const tiltDivs = document.getElementsByClassName("tilt-div");
+    const rotateDivs = document.getElementsByClassName("rotate-div");
+    for(let i = 0; i < 2; i++) {
+        tiltDivs[i].style.display = "none";
+        rotateDivs[i].style.display = "none";
     };
-    encountFunc(400, 1700);
-    setTimeout(function() {
-        focusImg.classList.add("bounce");
-    }, 450);
-    // encounterSound.play();
+    const overlayStyle = document.getElementById("transparentOverlay").style;
+    overlayStyle.display = "block";
+
+    clearInterval(mapInterval);
+    const position = new google.maps.LatLng(placedMark.pos[0], placedMark.pos[1]);
+    gmap.panTo(position);
+    function zoomIn() {
+        if(currentZoom < 23) {
+            currentZoom += 0.3;
+            gmap.setZoom(currentZoom);
+            setTimeout(zoomIn, 50);
+        }else {
+            overlayStyle.opacity = 1;
+            setTimeout(function() {
+                escapeButton.style.display = "flex";
+                battleDiv.style.display = "flex";
+                quizReload();
+                if(identifyObj(focusedObj)[0] === "chara") {
+                    focusImg.src = "./imgs/charas/" + focusedObj.img;
+                    encounterLog.innerText = "野生の " + focusedObj.name + " が現れた!";
+                    encountFunc(400, 1700);
+                }else if(identifyObj(focusedObj)[0] === "tatekan") {
+                    focusImg.src = "./imgs/tatekans/" + focusedObj.img;
+                };
+                setTimeout(function() {
+                    focusImg.classList.add("bounce");
+                }, 450);
+                // encounterSound.play();
+                overlayStyle.opacity = 0;
+                setTimeout(function() {
+                    overlayStyle.display = "none";
+                    profileButton.style.display = "block";
+                    for(let i = 0; i < 2; i++) {
+                        tiltDivs[i].style.display = "block";
+                        rotateDivs[i].style.display = "block";
+                    };
+                    mapInterval = setInterval(updateMap, 500);
+                    currentZoom = 20;
+                    gmap.setZoom(currentZoom);
+                }, 150);
+            }, 500);
+        };
+    };
+    zoomIn();
 };
 
 // ログがaミリ秒後にbミリ秒間だけ表示
@@ -365,7 +412,6 @@ function quizReload() {
         opt2.innerText = quiz.options[randomArr[1]];
         opt3.innerText = quiz.options[randomArr[2]];
         opt4.innerText = quiz.options[randomArr[3]];
-    
     };
     if(correctAns === quizArr.length) {
         escapeButton.style.display = "none";
@@ -378,32 +424,37 @@ function quizReload() {
             encountFunc(200, 2000);
             setTimeout(function() {
                 getObjSound.play();
-            }, 500);
+            }, 400);
 
             let credit = credits[myDegree][charaLv];
-            creditNum = creditNum + credit;
-            localStorage.setItem("creditNum", creditNum);
-            displayCredits();
             if(credit !== 0) {
+                creditNum = creditNum + credit;
+                localStorage.setItem("creditNum", creditNum);
+                displayCredits();
                 setTimeout(function() {
                     encounterLog.innerText = focusedObj.name + " から " + credit + "単位 もらった！";
-                    encountFunc(0, 1600);
-                }, 3000);
+                    encountFunc(0, 1800);
+                }, 2800);
                 setTimeout(function() {
                     getCreditSound.play();
-                }, 3200);
+                }, 3000);
                 setTimeout(function() {
                     getFunc();
                 }, 5400);
             }else {
                 setTimeout(function() {
                     getFunc();
-                }, 3200);
+                }, 3000);
             };
         }else if(identifyObj(focusedObj)[0] === "tatekan") {
+            encounterLog.innerText = focusedObj.name + " を見つけた!";
+            encountFunc(600, 3000);
+            setTimeout(function() {
+                getObjSound.play();
+            }, 1000);
             setTimeout(function() {
                 getFunc();
-            }, 3200);
+            }, 4600);
         };
     }else if(wrongAns === escapeTurns[Object.keys(difficulty).find(key => difficulty[key] === quizArr)]) {
         escapeButton.style.display = "none";
@@ -433,8 +484,8 @@ function quizReload() {
         quiz = quizzes[quizArr[correctAns]][Math.floor( Math.random()*quizzes[quizArr[correctAns]].length )];
         console.log(quiz) //ランダムに選ばれたクイズの情報
         quizFunc(quiz);
+        console.log(quizArr[correctAns]);
     };
-    console.log(quizArr[correctAns]);
 };
 
 // 回答時の正誤判定
@@ -530,10 +581,10 @@ function profileButtonClick() {
 
 function getFunc() {
     if(identifyObj(focusedObj)[0] === "chara") {
-        capturedCharas[focusedObj.number-1] = focusedObj;
+        capturedCharas[focusedObj.number-1] = "1";
         localStorage.setItem("capturedCharas", JSON.stringify(capturedCharas));
     }else if(identifyObj(focusedObj)[0] === "tatekan") {
-        capturedTatekans[focusedObj.number-1] = focusedObj;
+        capturedTatekans[focusedObj.number-1] = "2";
         localStorage.setItem("capturedTatekans", JSON.stringify(capturedTatekans));
     };
     (function() {
@@ -595,6 +646,11 @@ function editButtonClick() {
             click1Sound.play();
         };
     }
+
+    if(profileNameInput.value === "RstMyDt-色s") {
+        localStorage.clear();
+        console.log("すべての保存データを削除");
+    };
 };
 
 // プロフィール画像の変更
@@ -796,7 +852,7 @@ function placeLists() {
 
 // 獲得キャラ数・タテカン数の表示、リストの更新
 function displayCaptured() {
-    let bookCounter = document.getElementById("bookCounter");
+    const bookCounter = document.getElementById("bookCounter");
     function countFunc(array) {
         let count = 0;
         for(let i = 0; i < array.length; i++) {
@@ -810,7 +866,7 @@ function displayCaptured() {
 
     for(let i = 0; i < capturedCharas.length; i++) {
         if(capturedCharas[i]) {
-            let num = capturedCharas[i].number;
+            let num = i + 1;
             let pTag = document.getElementById("charaP" + num);
             let imgTag = document.getElementById("charaImg" + num);
             pTag.style.display = "none";
@@ -819,13 +875,18 @@ function displayCaptured() {
     };
     for(let i = 0; i < capturedTatekans.length; i++) {
         if(capturedTatekans[i]) {
-            let num = capturedTatekans[i].number;
+            let num = i + 1;
             let pTag = document.getElementById("tatekanP" + num);
             let imgTag = document.getElementById("tatekanImg" + num);
             pTag.style.display = "none";
             imgTag.style.display = "block";
         };
     };
+
+    const charaNum = document.getElementById("profileCharaNum");
+    const tatekanNum = document.getElementById("profileTatekanNum");
+    charaNum.innerText = countFunc(capturedCharas);
+    tatekanNum.innerText = countFunc(capturedTatekans);
 };
 
 // 取得単位数・学位の表示、更新
@@ -922,242 +983,234 @@ function displayTatekanCard(tatekan) {
 
 // 最初に呼び出される関数
 function initFunc() {
-    {
-    moveButton = document.getElementById("moveButton");
-    startPart = document.getElementById("startPart");
-    profilePart = document.getElementById("profilePart");
-    bookPart = document.getElementById("bookPart");
-    cardPart = document.getElementById("cardPart");
-    startNameInput = document.getElementById("startNameInput");
-    startButton = document.getElementById("startButton");
-    mapDiv = document.getElementById("map");
-    battleDiv = document.getElementById("battle");
-    profileButton = document.getElementById("profileButton");
-    escapeButton = document.getElementById("escapeButton");
-    focusImg = document.getElementById("focusImg");  
-    encounterLog = document.getElementById("encounterLog");
-    quizDiv = document.getElementById("quizDiv");
-    question = document.getElementById("question");
-    opt1 = document.getElementById("opt1");
-    opt2 = document.getElementById("opt2");
-    opt3 = document.getElementById("opt3");
-    opt4 = document.getElementById("opt4");
-    quizResult = document.getElementById("quizResult");
-    editButton = document.getElementById("editButton");
-    profileImg = document.getElementById("profileImg");
-    profileNameText = document.getElementById("profileNameText");
-    profileNameInput = document.getElementById("profileNameInput");
-    shape = document.getElementById("shape");
-    bgBox = document.getElementById("bgBox");
-    bgCircles = document.getElementById("bgCircles");
-    bgLogo = document.getElementById("bgLogo");
-    click1Sound = document.getElementById("click1Sound");
-    click2Sound = document.getElementById("click2Sound");
-    click3Sound = document.getElementById("click3Sound");
-    click4Sound = document.getElementById("click4Sound");
-    // encounterSound = document.getElementById("encounterSound");
-    correctSound = document.getElementById("correctSound");
-    wrongSound = document.getElementById("wrongSound");
-    getObjSound = document.getElementById("getObjSound");
-    getCreditSound = document.getElementById("getCreditSound");
-    };
-
-    {
-    [startButton, moveButton, profileButton, escapeButton, opt1, opt2, opt3, opt4, editButton].forEach(button => {
-        const buttonStyle = window.getComputedStyle(button);
-        const width = buttonStyle.width;
-        const height = buttonStyle.height;
-        let widthNum = parseFloat(buttonStyle.width);
-        const widthUnit = buttonStyle.width.replace(/[\d.]/g, '');
-        let heightNum = parseFloat(buttonStyle.height);
-        const heightUnit = buttonStyle.height.replace(/[\d.]/g, '');
-        button.addEventListener("mousedown", function() {
-            button.style.width = String(widthNum*0.85) + widthUnit;
-            button.style.height = String(heightNum*0.85) + heightUnit;
-        });
-        button.addEventListener("mouseup", function() {
-            button.style.width = width;
-            button.style.height = height;
-        });
-        button.addEventListener("mouseleave", function() {
-            button.style.width = width;
-            button.style.height = height;
-        });
-        button.addEventListener("touchstart", function() {
-            button.style.width = String(widthNum*0.85) + widthUnit;
-            button.style.height = String(heightNum*0.85) + heightUnit;
-        });
-        button.addEventListener("touchend", function() {
-            button.style.width = width;
-            button.style.height = height;
-        });
-    });
-    };
-
-    loadCharas();
-    loadTatekans();
-    loadQuizzes();
-
-    document.getElementById("firstPage").style.display = "block"
-    
-    navigator.geolocation.getCurrentPosition((position)=>{
-        myLat = position.coords.latitude;
-        myLng = position.coords.longitude;
-        let initPos = new google.maps.LatLng(myLat, myLng);
-
-        gmap = new google.maps.Map(mapDiv, {
-            center: initPos,
-            zoom: currentZoom,
-            tilt: 47.5,
-            mapId: "206221e9066e4473",
-            disableDefaultUI: true,
-            keyboardShortcuts: false,
-        });
-
-        mark = new google.maps.Marker({
-            map: gmap,
-            position: initPos,
-        });
-
-        const buttons = [
-            ["◀", "rotate", -20, google.maps.ControlPosition.LEFT_CENTER],
-            ["▶", "rotate", 20, google.maps.ControlPosition.RIGHT_CENTER],
-            ["▲", "tilt", 20, google.maps.ControlPosition.TOP_CENTER],
-            ["▼", "tilt", -20, google.maps.ControlPosition.BOTTOM_CENTER],
-        ];
-        
-        buttons.forEach(([text, mode, amount, position]) => {
-            const controlDiv = document.createElement("div");
-            const controlUI = document.createElement("button");
-
-            gmap.controls[position].push(controlDiv);
-            switch (mode) {
-                case "tilt":
-                    controlUI.className = "tilt-div";
-                    break;
-                case "rotate":
-                    controlUI.className = "rotate-div";
-                    break;
-                default:
-                    break;
-            }
-            controlUI.innerText = `${text}`;
-            controlUI.addEventListener("click", () => {
-                adjustMap(mode, amount);
-            });
-            controlDiv.appendChild(controlUI);
-        });
-        
-        const adjustMap = function (mode, amount) {
-            switch (mode) {
-                case "tilt":
-                    gmap.setTilt(gmap.getTilt() + amount);
-                    break;
-                case "rotate":
-                    gmap.setHeading(gmap.getHeading() + amount);
-                    break;
-                default:
-                    break;
-            }
-        };
-
-        if(!localStorage.getItem("charas")) {
-            localStorage.setItem("charas", JSON.stringify(charas));
-            localStorage.setItem("tatekans", JSON.stringify(tatekans));
-            localStorage.setItem("quizzes", JSON.stringify(quizzes));
-        };
-        charas = JSON.parse(localStorage.getItem("charas"));
-        tatekans = JSON.parse(localStorage.getItem("tatekans"));
-        quizzes = JSON.parse(localStorage.getItem("quizzes"));
-        allCharas = [...charas.Lv1, ...charas.Lv2, ...charas.Lv3, ...charas.LvLegend];
-        if(localStorage.getItem("capturedCharas")) {
-            capturedCharas = JSON.parse(localStorage.getItem("capturedCharas"));
-        };
-        if(localStorage.getItem("capturedTatekans")) {
-            capturedTatekans = JSON.parse(localStorage.getItem("capturedTatekans"));
-        };
-
-        if(localStorage.getItem("userName")) {
-            mapPartDisplay = true;
-            startPart.style.display = "none";
-            profileNameText.innerText = localStorage.getItem("userName");
-            profileNameInput.value = localStorage.getItem("userName");
-        };
-        if(localStorage.getItem("userImg")) {
-            profileButton.src = localStorage.getItem("userImg");
-            profileImg.src = localStorage.getItem("userImg");
-        };
-        if(!localStorage.getItem("creditNum")) {
-            localStorage.setItem("creditNum", creditNum);
-        };
-        creditNum = parseInt(localStorage.getItem("creditNum"), 10);
-        
-        startOpening();
-
-        adjustment();
-        for(let i = 0; i < appearance.number; i++) {
-            placeMark(i);
-        };
-
-        window.setInterval(updateMap, 500);
-        updateObjs();
-
+    if(charas&&tatekans&&quizzes) {
         {
-            moveButton.addEventListener("click", function() {
-                moveButtonClick();
+        moveButton = document.getElementById("moveButton");
+        startPart = document.getElementById("startPart");
+        profilePart = document.getElementById("profilePart");
+        bookPart = document.getElementById("bookPart");
+        cardPart = document.getElementById("cardPart");
+        startNameInput = document.getElementById("startNameInput");
+        startButton = document.getElementById("startButton");
+        mapDiv = document.getElementById("map");
+        battleDiv = document.getElementById("battle");
+        profileButton = document.getElementById("profileButton");
+        escapeButton = document.getElementById("escapeButton");
+        focusImg = document.getElementById("focusImg");  
+        encounterLog = document.getElementById("encounterLog");
+        quizDiv = document.getElementById("quizDiv");
+        question = document.getElementById("question");
+        opt1 = document.getElementById("opt1");
+        opt2 = document.getElementById("opt2");
+        opt3 = document.getElementById("opt3");
+        opt4 = document.getElementById("opt4");
+        quizResult = document.getElementById("quizResult");
+        editButton = document.getElementById("editButton");
+        profileImg = document.getElementById("profileImg");
+        profileNameText = document.getElementById("profileNameText");
+        profileNameInput = document.getElementById("profileNameInput");
+        shape = document.getElementById("shape");
+        bgBox = document.getElementById("bgBox");
+        bgCircles = document.getElementById("bgCircles");
+        bgLogo = document.getElementById("bgLogo");
+        click1Sound = document.getElementById("click1Sound");
+        click2Sound = document.getElementById("click2Sound");
+        click3Sound = document.getElementById("click3Sound");
+        click4Sound = document.getElementById("click4Sound");
+        // encounterSound = document.getElementById("encounterSound");
+        correctSound = document.getElementById("correctSound");
+        wrongSound = document.getElementById("wrongSound");
+        getObjSound = document.getElementById("getObjSound");
+        getCreditSound = document.getElementById("getCreditSound");
+        };
+    
+        {
+        [startButton, moveButton, profileButton, escapeButton, opt1, opt2, opt3, opt4, editButton].forEach(button => {
+            const buttonStyle = window.getComputedStyle(button);
+            const width = buttonStyle.width;
+            const height = buttonStyle.height;
+            let widthNum = parseFloat(buttonStyle.width);
+            const widthUnit = buttonStyle.width.replace(/[\d.]/g, '');
+            let heightNum = parseFloat(buttonStyle.height);
+            const heightUnit = buttonStyle.height.replace(/[\d.]/g, '');
+            button.addEventListener("mousedown", function() {
+                button.style.width = String(widthNum*0.85) + widthUnit;
+                button.style.height = String(heightNum*0.85) + heightUnit;
             });
-
-            startButton.addEventListener("click", function() {
-                startButtonClick();
+            button.addEventListener("mouseup", function() {
+                button.style.width = width;
+                button.style.height = height;
             });
-
-            profileButton.addEventListener("click", function() {
-                profileButtonClick();
+            button.addEventListener("mouseleave", function() {
+                button.style.width = width;
+                button.style.height = height;
             });
-
-            escapeButton.addEventListener("click", function() {
-                backFunc();
-                click1Sound.play();
+            button.addEventListener("touchstart", function() {
+                button.style.width = String(widthNum*0.85) + widthUnit;
+                button.style.height = String(heightNum*0.85) + heightUnit;
             });
+            button.addEventListener("touchend", function() {
+                button.style.width = width;
+                button.style.height = height;
+            });
+        });
+        };
+    
+        document.getElementById("firstPage").style.display = "block"
         
-            opt1.addEventListener("click", function() {
-                answerFunc(opt1);
+        navigator.geolocation.getCurrentPosition((position)=>{
+            myLat = position.coords.latitude;
+            myLng = position.coords.longitude;
+            let initPos = new google.maps.LatLng(myLat, myLng);
+    
+            gmap = new google.maps.Map(mapDiv, {
+                center: initPos,
+                zoom: currentZoom,
+                tilt: 47.5,
+                mapId: "206221e9066e4473",
+                disableDefaultUI: true,
+                keyboardShortcuts: false,
             });
-            opt2.addEventListener("click", function() {
-                answerFunc(opt2);
+    
+            mark = new google.maps.Marker({
+                map: gmap,
+                position: initPos,
             });
-            opt3.addEventListener("click", function() {
-                answerFunc(opt3);
-            });
-            opt4.addEventListener("click", function() {
-                answerFunc(opt4);
-            });
-
-            editButton.addEventListener("click", function() {
-                editButtonClick();
+    
+            const buttons = [
+                ["◀", "rotate", -20, google.maps.ControlPosition.LEFT_CENTER],
+                ["▶", "rotate", 20, google.maps.ControlPosition.RIGHT_CENTER],
+                ["▲", "tilt", 20, google.maps.ControlPosition.TOP_CENTER],
+                ["▼", "tilt", -20, google.maps.ControlPosition.BOTTOM_CENTER],
+            ];
+            
+            buttons.forEach(([text, mode, amount, position]) => {
+                const controlDiv = document.createElement("div");
+                const controlUI = document.createElement("button");
+    
+                gmap.controls[position].push(controlDiv);
+                switch (mode) {
+                    case "tilt":
+                        controlUI.className = "tilt-div";
+                        break;
+                    case "rotate":
+                        controlUI.className = "rotate-div";
+                        break;
+                    default:
+                        break;
+                };
+                controlUI.innerText = `${text}`;
+                controlUI.addEventListener("click", () => {
+                    adjustMap(mode, amount);
+                });
+                controlDiv.appendChild(controlUI);
             });
             
-            startNameInput.addEventListener("input", function () {
-                const maxLength = 10;
-                if (this.value.length > maxLength) {
-                    this.value = this.value.slice(0, maxLength);
+            const adjustMap = function (mode, amount) {
+                switch (mode) {
+                    case "tilt":
+                        gmap.setTilt(gmap.getTilt() + amount);
+                        break;
+                    case "rotate":
+                        gmap.setHeading(gmap.getHeading() + amount);
+                        break;
+                    default:
+                        break;
                 };
-            })
-
-            profileNameInput.addEventListener("input", function () {
-                const maxLength = 10;
-                if (this.value.length > maxLength) {
-                    this.value = this.value.slice(0, maxLength);
-                };
-            });
-        };
-        
-        bookTab();
-        placeLists();
-        displayCaptured();
-        displayCredits();
-    }, () => {
-    }, {
-        enableHighAccuracy: true                   
-    });
+            };
+    
+            if(localStorage.getItem("capturedCharas")) {
+                capturedCharas = JSON.parse(localStorage.getItem("capturedCharas"));
+            };
+            if(localStorage.getItem("capturedTatekans")) {
+                capturedTatekans = JSON.parse(localStorage.getItem("capturedTatekans"));
+            };
+    
+            if(localStorage.getItem("userName")) {
+                mapPartDisplay = true;
+                startPart.style.display = "none";
+                profileNameText.innerText = localStorage.getItem("userName");
+                profileNameInput.value = localStorage.getItem("userName");
+            }else {
+                startOpening();
+            };
+            if(localStorage.getItem("userImg")) {
+                profileButton.src = localStorage.getItem("userImg");
+                profileImg.src = localStorage.getItem("userImg");
+            };
+            if(!localStorage.getItem("creditNum")) {
+                localStorage.setItem("creditNum", creditNum);
+            };
+            creditNum = parseInt(localStorage.getItem("creditNum"), 10);
+    
+            adjustment();
+            for(let i = 0; i < appearance.number; i++) {
+                placeMark(i);
+            };
+    
+            mapInterval = setInterval(updateMap, 500);
+            updateObjs();
+    
+            {
+                moveButton.addEventListener("click", function() {
+                    moveButtonClick();
+                });
+    
+                startButton.addEventListener("click", function() {
+                    startButtonClick();
+                });
+    
+                profileButton.addEventListener("click", function() {
+                    profileButtonClick();
+                });
+    
+                escapeButton.addEventListener("click", function() {
+                    backFunc();
+                    click1Sound.play();
+                });
+            
+                opt1.addEventListener("click", function() {
+                    answerFunc(opt1);
+                });
+                opt2.addEventListener("click", function() {
+                    answerFunc(opt2);
+                });
+                opt3.addEventListener("click", function() {
+                    answerFunc(opt3);
+                });
+                opt4.addEventListener("click", function() {
+                    answerFunc(opt4);
+                });
+    
+                editButton.addEventListener("click", function() {
+                    editButtonClick();
+                });
+                
+                startNameInput.addEventListener("input", function () {
+                    const maxLength = 10;
+                    if (this.value.length > maxLength) {
+                        this.value = this.value.slice(0, maxLength);
+                    };
+                })
+    
+                profileNameInput.addEventListener("input", function () {
+                    const maxLength = 10;
+                    if (this.value.length > maxLength) {
+                        this.value = this.value.slice(0, maxLength);
+                    };
+                });
+            };
+            
+            bookTab();
+            placeLists();
+            displayCaptured();
+            displayCredits();
+        }, () => {
+            console.error("位置情報の取得に失敗");
+        }, {
+            enableHighAccuracy: true
+        });
+    }else {
+        console.error("jsonファイルからの情報の取得が未完了");
+    };
 };

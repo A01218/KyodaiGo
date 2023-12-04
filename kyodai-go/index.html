@@ -2,14 +2,20 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="京大GO">
     <title>京大GO</title>
 
     <link rel="stylesheet" href="./style.css">
-    <script src="./index.js"></script>
 </head>
 <body>
-    <img id="moveButton" class="move-button" src="./imgs/others/book.png" draggable="false">
+    <div id="transparentOverlay" class="transparent-overlay"></div>
+
+    <img id="moveButton" class="move-button" src="./imgs/others/book.png">
 
     <!-- ここからスタート画面 -->
     <div id="startPart" class="start-part">
@@ -20,7 +26,7 @@
             </p>
             <img id="colorsLogo" class="colors-logo" src="./imgs/others/colorsLogo.jpg">
         </div>
-        <img class="start-bg" src="./imgs/backgrounds/start.png" draggable="false">
+        <img class="start-bg" src="./imgs/backgrounds/start.png">
         <div class="form-box">
             <img id="startImg" class="start-img" src="./imgs/others/defaultIcon.jpg">
             <input id="startInput" class="start-input" type="file" accept="image/*" onchange="displayUserImg(event)">
@@ -38,9 +44,9 @@
         </div>
         <img id="profileButton" class="profile-button" src="./imgs/others/defaultIcon.jpg">
         <div id="battle" class="battle">
-            <img class="battle-bg" src="./imgs/backgrounds/2.JPG" draggable="false">
-            <img id="escapeButton" class="escape-button" src="./imgs/others/escape3.png" draggable="false">
-            <img id="focusImg" class="focus-img" src="" draggable="false">
+            <img class="battle-bg" src="./imgs/backgrounds/2.JPG">
+            <img id="escapeButton" class="escape-button" src="./imgs/others/escape3.png">
+            <img id="focusImg" class="focus-img" src="">
             <p id="encounterLog" class="encounter-log"></p>
             <div id="quizDiv" class="quiz-div">
                 <p id="question" class="question"></p>
@@ -54,8 +60,6 @@
                 <div id="shape" class="shape"></div>
             </div>
         </div>
-
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBHd-1LFAVCD7cDLYck46D9jYCm_nF8lQ8&callback=initFunc&map_ids=206221e9066e4473&libraries=marker,geometry" async></script>
     </div>
     <!-- ここまでマップ -->
 
@@ -74,6 +78,16 @@
         <p id="degree" class="degree"></p>
         <meter id="creditGage" class="credit-gage" min="0" max="" value=""></meter>
         <p id="creditRate" class="credit-rate"></p>
+        <div id="profileCounter" class="profile-counter">
+            <div class="profile-chara-counter">
+                <p class="profile-object-name">キャラ</p>
+                <p id="profileCharaNum" class="profile-object-num"></p>
+            </div>
+            <div class="profile-tatekan-counter">
+                <p class="profile-object-name">タテカン</p>
+                <p id="profileTatekanNum" class="profile-object-num"></p>
+            </div>
+        </div>
     </div>
     <!-- ここまでプロフィール -->
 
@@ -100,7 +114,7 @@
 
     <!-- ここからカード -->
     <div id="cardPart" class="card-part">
-        <img id="bgLogo" class="bg-logo" src="./imgs/others/logo.png" draggable="false">
+        <img id="bgLogo" class="bg-logo" src="./imgs/others/logo.png">
         <div id="bgBox" class="bg-box" >
             <ul id="bgCircles" class="bg-circles">
                     <li></li>
@@ -117,20 +131,20 @@
         </div>
         <div id="charaCard" class="card">
             <div class="img-box">
-                <img id="charaImg" class="chara-img" src="" draggable="false">
-                <img id="badgeImg" class="badge-img" src="" draggable="false">
+                <img id="charaImg" class="chara-img" src="">
+                <img id="badgeImg" class="badge-img" src="">
             </div>
-            <p id="charaName" class="name"></p>
-            <p id="charaDesc" class="desc"></p>
-            <p id="type" class="type"></p>
-            <p id="detail" class="detail"></p>
+            <p id="charaName" class="card-name"></p>
+            <p id="charaDesc" class="card-desc"></p>
+            <p id="type" class="card-type"></p>
+            <p id="detail" class="card-detail"></p>
         </div>
         <div id="tatekanCard" class="card">
             <div class="img-box">
-                <img id="tatekanImg" class="tatekan-img" src="" draggable="false">
+                <img id="tatekanImg" class="tatekan-img" src="">
             </div>
-            <p id="tatekanName" class="name"></p>
-            <p id="tatekanDetail" class="detail"></p>
+            <p id="tatekanName" class="card-name"></p>
+            <p id="tatekanDetail" class="card-detail"></p>
         </div>
     </div>
     <!-- ここまでカード -->
@@ -146,6 +160,8 @@
     <audio id="getObjSound" src="./sounds/getObj.mp3"></audio>
     <audio id="getCreditSound" src="./sounds/getCredit.mp3"></audio>
     <!-- ここまで効果音 -->
-    
+
+    <script src="./index.js" defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBHd-1LFAVCD7cDLYck46D9jYCm_nF8lQ8&callback=initFunc&map_ids=206221e9066e4473&libraries=marker,geometry" defer></script>
 </body>
 </html>
