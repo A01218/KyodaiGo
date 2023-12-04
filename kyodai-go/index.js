@@ -17,7 +17,7 @@ let question, opt1, opt2, opt3, opt4, quizResult;
 let editButton;
 let profileImg, profileNameText, profileNameInput;
 let creditNum = 0;
-let myDegree;
+let myDegree;aa
 
 let focusedMark;
 let focusedObj;
