@@ -40,9 +40,13 @@
 
     <!-- ここからマップ -->
     <div id="mapPart" class="map-part">
-        <div id="map" class="map">
-        </div>
+        <div id="map" class="map"></div>
         <img id="profileButton" class="profile-button" src="./imgs/others/defaultIcon.jpg">
+    </div>
+    <!-- ここまでマップ -->
+
+    <!-- ここからバトル -->
+    <div id="battlePart" class="battle-part">
         <div id="battle" class="battle">
             <img class="battle-bg" src="./imgs/backgrounds/2.JPG">
             <img id="escapeButton" class="escape-button" src="./imgs/others/escape3.png">
@@ -61,7 +65,7 @@
             </div>
         </div>
     </div>
-    <!-- ここまでマップ -->
+    <!-- ここまでバトル -->
 
     <!-- ここからプロフィール -->
     <div id="profilePart" class="profile-part">
@@ -161,7 +165,14 @@
     <audio id="getCreditSound" src="./sounds/getCredit.mp3"></audio>
     <!-- ここまで効果音 -->
 
-    <script src="./index.js" defer></script>
+    <script src="./jsFiles/variables.js"></script>
+    <script src="./jsFiles/init.js"></script>
+    <script src="./jsFiles/map.js"></script>
+    <script src="./jsFiles/battle.js"></script>
+    <script src="./jsFiles/getUserInfo.js"></script>
+    <script src="./jsFiles/adjustment.js"></script>
+    <script src="./jsFiles/buttonEvents.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBHd-1LFAVCD7cDLYck46D9jYCm_nF8lQ8&callback=initFunc&map_ids=206221e9066e4473&libraries=marker,geometry" defer></script>
+    <script>init([createMap, bookTab, placeLists, displayCaptured, displayCredits, buttonEvents]);</script>
 </body>
 </html>
