@@ -76,87 +76,98 @@ function createMap() {
     });
 } 
 
-function placeMark(i) {
-    let {radius, intervalSec, stayMin, rate} = adjustment().appearance;
-    function randomPos() {
-        let r = Math.random()*radius;
-        let theta = (Math.random()*360)*(Math.PI/180);
-        let R = 6371008;
-        let lat = myLat + (Math.floor((r*Math.sin(theta)*180)/(R*Math.PI)*10000000))/10000000;
-        let lng = myLng + Math.floor((r*Math.cos(theta)*180)/(R*Math.cos(myLat*(Math.PI/180))*Math.PI)*10000000)/10000000;
-        
-        return [lat, lng];
-    };
-    function randomObj() {
-        let num = Math.floor(Math.random()*1000);
-        if(num < rate.tatekan*10) {
-            return "tatekan";
-        }else if(num < (rate.tatekan + rate.Lv1)*10) {
-            return "Lv1";
-        }else if(num < (rate.tatekan + rate.Lv1 + rate.Lv2)*10) {
-            return "Lv2";
-        }else if(num < (rate.tatekan + rate.Lv1 + rate.Lv2 + rate.Lv3)*10) {
-            return "Lv3";
-        }else{
-            return "LvLegend";
-        };
-    };
-    function randomNum(min, max) {
-        return Math.random()*(max - min) + min;
-    };
+function _randomPos() {
+    const { radius } = adjustment().appearance;
+    const r = Math.random()*radius;
+    const theta = (Math.random()*360)*(Math.PI/180);
+    const R = 6371008;
+    const lat = myLat + (Math.floor((r*Math.sin(theta)*180)/(R*Math.PI)*10000000))/10000000;
+    const lng = myLng + Math.floor((r*Math.cos(theta)*180)/(R*Math.cos(myLat*(Math.PI/180))*Math.PI)*10000000)/10000000;
     
-    let intervalTime = randomNum(intervalSec[0], intervalSec[1])*1000;
-    let stayTime = randomNum(stayMin[0], stayMin[1])*60*1000;
-    console.log(intervalTime, stayTime);
+    return [lat, lng];
+}
+
+function _randomNum(min, max) {
+    return Math.random()*(max - min) + min;
+}
+
+function _randomObj() {
+    const { rate } = adjustment().appearance;
+    const num = Math.floor(Math.random()*1000);
+    if(num < rate.tatekan*10) {
+        return "tatekan";
+    }else if(num < (rate.tatekan + rate.Lv1)*10) {
+        return "Lv1";
+    }else if(num < (rate.tatekan + rate.Lv1 + rate.Lv2)*10) {
+        return "Lv2";
+    }else if(num < (rate.tatekan + rate.Lv1 + rate.Lv2 + rate.Lv3)*10) {
+        return "Lv3";
+    }else{
+        return "LvLegend";
+    }
+}
+
+function _removeMark(placedMark) {
+    content.classList.remove("stay");
+    setTimeout(function() {
+        if(placedMarks[i] === placedMark) {
+            placedMarks[i].mark.setMap(null);
+            placedMarks[i] = null;
+            console.log("消滅", placedMarks)
+            placeMark(i);
+        }
+    }, 700);
+}
+
+function _showMark() {
+    let pos = _randomPos();
+    let diff = _randomObj();
+    let obj;
+    let content = document.createElement("img");
+    content.className = "obj-mark";
+    if(diff === "tatekan") {
+        obj = tatekans[Math.floor(Math.random()*(tatekans.length))];
+        content.src = "./imgs/tatekans/" + obj.img;
+    }else{
+        obj = charas[diff][Math.floor(Math.random()*(charas[diff].length))];
+        content.src = "./imgs/charas/" + obj.img;
+    };
+    let mark = new google.maps.marker.AdvancedMarkerElement({
+        map: gmap,
+        position: new google.maps.LatLng(pos[0], pos[1]),
+        content: content,
+    });
+    placedMarks[i] = {
+        pos,
+        obj,
+        mark,
+    };
+
+    mark.addListener("click", function() {
+        objMarkClick(placedMarks[i]); 
+    });
 
     setTimeout(function() {
-        let pos = randomPos();
-        let diff = randomObj();
-        let obj;
-        let content = document.createElement("img");
-        content.className = "obj-mark";
-        if(diff === "tatekan") {
-            obj = tatekans[Math.floor(Math.random()*(tatekans.length))];
-            content.src = "./imgs/tatekans/" + obj.img;
-        }else{
-            obj = charas[diff][Math.floor(Math.random()*(charas[diff].length))];
-            content.src = "./imgs/charas/" + obj.img;
-        };
-        let mark = new google.maps.marker.AdvancedMarkerElement({
-            map: gmap,
-            position: new google.maps.LatLng(pos[0], pos[1]),
-            content: content,
-        });
-        placedMarks[i] = {
-            pos,
-            obj,
-            mark,
-        };
+        content.classList.add("stay");
+    }, 500);
 
-        mark.addListener("click", function() {
-            objMarkClick(placedMarks[i]); 
-        });
+    console.log("出現", placedMarks);
+    
+    let placedMark = placedMarks[i];
+    
+    setTimeout(() => {
+        _removeMark(placedMark);
+    }, stayTime);
+}
 
-        setTimeout(function() {
-            content.classList.add("stay");
-        }, 500);
+function placeMark(i) {
+    const { intervalSec, stayMin } = adjustment().appearance;
+    
+    const intervalTime = _randomNum(intervalSec[0], intervalSec[1])*1000;
+    const stayTime = _randomNum(stayMin[0], stayMin[1])*60*1000;
+    console.log(intervalTime, stayTime);
 
-        console.log("出現", placedMarks)
-        
-        let placedMark = placedMarks[i];
-        
-        setTimeout(function() {
-            content.classList.remove("stay");
-            setTimeout(function() {
-                if(placedMarks[i] === placedMark) {
-                    placedMarks[i].mark.setMap(null);
-                    placedMarks[i] = null;
-                    console.log("消滅", placedMarks)
-                    placeMark(i);
-                };
-            }, 700);
-        }, stayTime);
-    }, intervalTime);
+    setTimeout(_showMark, intervalTime);
 }
 
 function updateMap() {
