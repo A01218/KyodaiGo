@@ -1,4 +1,3 @@
-console.log("3")
 function startOpening() {
     document.getElementById("firstPage").style.display = "none";
     setTimeout(function() {

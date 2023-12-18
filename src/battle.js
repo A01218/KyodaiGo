@@ -1,4 +1,3 @@
-console.log("7")
 function identifyObj(obj) {
     let kind, diff;
     if(obj.hasOwnProperty("type")) {

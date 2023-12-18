@@ -1,4 +1,3 @@
-console.log("8")
 function displayUserImg(event) {
     const startImg = document.getElementById("startImg");
     const fileInput = event.target;

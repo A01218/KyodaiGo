@@ -1,4 +1,3 @@
-console.log("10")
 function displayCharaCard(chara) {
     const bgLogo = document.getElementById("bgLogo");
     const bgBox = document.getElementById("bgBox");

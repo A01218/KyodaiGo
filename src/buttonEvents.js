@@ -1,4 +1,3 @@
-console.log("4")
 function startButtonClick() {
     const startPart = document.getElementById("startPart");
     const startNameInput = document.getElementById("startNameInput");

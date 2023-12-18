@@ -1,4 +1,3 @@
-console.log("6")
 function createMap() {
     navigator.geolocation.getCurrentPosition((position)=>{
         myLat = position.coords.latitude;

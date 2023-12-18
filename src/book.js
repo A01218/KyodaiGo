@@ -1,4 +1,3 @@
-console.log("9")
 function bookTab() {
     const charaTab = document.getElementById("charaTab");
     const tatekanTab = document.getElementById("tatekanTab");

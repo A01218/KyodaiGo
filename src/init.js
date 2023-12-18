@@ -1,4 +1,3 @@
-console.log("5")
 function loadCharas() {
     return new Promise((resolve, reject) => {
         const req = new XMLHttpRequest();

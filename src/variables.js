@@ -1,4 +1,3 @@
-console.log("1")
 let charas, allCharas, tatekans, quizzes;
 
 let gmap, mark;
