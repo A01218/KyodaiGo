@@ -1,3 +1,4 @@
+console.log("6")
 function createMap() {
     navigator.geolocation.getCurrentPosition((position)=>{
         myLat = position.coords.latitude;
@@ -107,7 +108,8 @@ function _randomObj() {
     }
 }
 
-function _removeMark(placedMark) {
+function _removeMark(placedMark, i) {
+    let content = document.createElement("img");
     content.classList.remove("stay");
     setTimeout(function() {
         if(placedMarks[i] === placedMark) {
@@ -119,7 +121,7 @@ function _removeMark(placedMark) {
     }, 700);
 }
 
-function _showMark() {
+function _showMark(i) {
     let pos = _randomPos();
     let diff = _randomObj();
     let obj;
@@ -154,20 +156,21 @@ function _showMark() {
     console.log("出現", placedMarks);
     
     let placedMark = placedMarks[i];
-    
+
+    const { stayMin } = adjustment().appearance;
+    const stayTime = _randomNum(stayMin[0], stayMin[1])*60*1000;
+
     setTimeout(() => {
-        _removeMark(placedMark);
+        _removeMark(placedMark, i);
     }, stayTime);
 }
 
 function placeMark(i) {
-    const { intervalSec, stayMin } = adjustment().appearance;
+    const { intervalSec } = adjustment().appearance;
     
     const intervalTime = _randomNum(intervalSec[0], intervalSec[1])*1000;
-    const stayTime = _randomNum(stayMin[0], stayMin[1])*60*1000;
-    console.log(intervalTime, stayTime);
 
-    setTimeout(_showMark, intervalTime);
+    setTimeout(() => _showMark(i), intervalTime);
 }
 
 function updateMap() {

@@ -1,3 +1,4 @@
+console.log("1")
 let charas, allCharas, tatekans, quizzes;
 
 let gmap, mark;
@@ -5,6 +6,7 @@ let currentZoom = 19;
 let myLat, myLng, myPos;
 let mapInterval;
 let placedMarks = [];
+let mapPartDisplay;
 
 let focusedMark;
 let focusedObj;

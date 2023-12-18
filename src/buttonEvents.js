@@ -1,3 +1,117 @@
+console.log("4")
+function startButtonClick() {
+    const startPart = document.getElementById("startPart");
+    const startNameInput = document.getElementById("startNameInput");
+    const startAnnounce = document.getElementById("startAnnounce");
+    const profileNameText = document.getElementById("profileNameText");
+    const profileNameInput = document.getElementById("profileNameInput");
+    if(startNameInput.value === "") {
+        startAnnounce.style.display = "block";
+    }else {
+        mapPartDisplay = true;
+        startPart.style.display = "none";
+        profileNameText.innerText = startNameInput.value;
+        profileNameInput.value = profileNameText.innerText;
+        localStorage.setItem("userName", profileNameText.innerText);
+        startAnnounce.style.display = "none";
+    };
+}
+
+function profileButtonClick() {
+    const moveButton = document.getElementById("moveButton");
+    const profilePart = document.getElementById("profilePart");
+    const click3Sound = document.getElementById("click3Sound");
+    mapPartDisplay = false;
+    moveButton.src = "./imgs/others/cross.png";
+    profilePart.style.display = "flex";
+    click3Sound.play();
+}
+
+function getFunc() {
+    if(identifyObj(focusedObj)[0] === "chara") {
+        capturedCharas[focusedObj.number-1] = "1";
+        localStorage.setItem("capturedCharas", JSON.stringify(capturedCharas));
+    }else if(identifyObj(focusedObj)[0] === "tatekan") {
+        capturedTatekans[focusedObj.number-1] = "2";
+        localStorage.setItem("capturedTatekans", JSON.stringify(capturedTatekans));
+    };
+    (function() {
+        let i = placedMarks.indexOf(focusedMark);
+        if(placedMarks[i] === focusedMark) {
+            focusedMark.mark.setMap(null);
+            placedMarks[i] = null;
+            console.log("消滅", placedMarks)
+            placeMark(i);
+        };
+    })();
+
+    const moveButton = document.getElementById("moveButton");
+    const battlePart = document.getElementById("battlePart");
+    const quizDiv = document.getElementById("quizDiv");
+    battlePart.style.display = "none";
+    quizDiv.style.display = "flex";
+    moveButton.style.display = "block";
+    displayCaptured();
+
+    console.log("get!" + focusedObj.number) //get! オブジェクト名
+    console.log(capturedCharas, capturedTatekans); //これまでに捕まえたオブジェクトの情報
+}
+
+function backFunc() {
+    const moveButton = document.getElementById("moveButton");
+    const battlePart = document.getElementById("battlePart");
+    const quizDiv = document.getElementById("quizDiv");
+    const focusImg = document.getElementById("focusImg"); 
+    battlePart.style.display = "none";
+    quizDiv.style.display = "flex";
+    moveButton.style.display = "block";
+    focusImg.classList.remove("bounce");
+
+    console.log("miss!" + focusedObj.number) //miss! オブジェクト番号
+    console.log(capturedCharas, capturedTatekans); //これまでに捕まえたキャラの情報
+}
+
+function editButtonClick() {
+    const editImg = document.getElementById("editImg");
+    const profileInput = document.getElementById("profileInput");
+    const profileNameText = document.getElementById("profileNameText");
+    const profileNameTextDisplay = window.getComputedStyle(profileNameText).display;
+    const profileNameInput = document.getElementById("profileNameInput");
+    const profileAnnounce = document.getElementById("profileAnnounce");
+    const inquery = document.getElementById("inquery");
+    const click1Sound = document.getElementById("click1Sound");
+    if(profileNameTextDisplay === "block") {
+        editImg.src = "./imgs/others/back.png";
+        editImg.style.height = "70%";
+        profileNameText.style.display = "none";
+        profileInput.style.display = "block";
+        profileNameInput.style.display = "block";
+        inquery.style.display = "block";
+        click1Sound.play();
+    }else {
+        if(profileNameInput.value === "") {
+            profileAnnounce.style.display = "block";
+        }else {
+            editImg.src = "./imgs/others/setting.PNG";
+            editImg.style.height = "100%";
+            profileInput.style.display = "none";
+            profileNameInput.style.display = "none";
+            profileNameText.style.display = "block";
+            profileNameText.innerText = profileNameInput.value;
+            profileNameInput.value = profileNameText.innerText;
+            localStorage.setItem("userName", profileNameText.innerText);
+            profileAnnounce.style.display = "none";
+            inquery.style.display = "none";
+            click1Sound.play();
+        };
+    }
+
+    if(profileNameInput.value === "RstMyDt-色s") {
+        localStorage.clear();
+        console.log("すべての保存データを削除");
+    };
+}
+
 function buttonEvents() {
     const moveButton = document.getElementById("moveButton");
     const startButton = document.getElementById("startButton");

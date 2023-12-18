@@ -165,14 +165,21 @@
     <audio id="getCreditSound" src="./sounds/getCredit.mp3"></audio>
     <!-- ここまで効果音 -->
 
-    <script src="./jsFiles/variables.js"></script>
-    <script src="./jsFiles/init.js"></script>
-    <script src="./jsFiles/map.js"></script>
-    <script src="./jsFiles/battle.js"></script>
-    <script src="./jsFiles/getUserInfo.js"></script>
-    <script src="./jsFiles/adjustment.js"></script>
-    <script src="./jsFiles/buttonEvents.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBHd-1LFAVCD7cDLYck46D9jYCm_nF8lQ8&callback=initFunc&map_ids=206221e9066e4473&libraries=marker,geometry" defer></script>
-    <script>init([createMap, bookTab, placeLists, displayCaptured, displayCredits, buttonEvents]);</script>
+    <script src="./src/variables.js"></script>
+    <script src="./src/adjustment.js"></script>
+    <script src="./src/getUserInfo.js"></script>
+    <script src="./src/buttonEvents.js"></script>
+    <script src="./src/init.js"></script>
+    <script src="./src/map.js"></script>
+    <script src="./src/battle.js"></script>
+    <script src="./src/profile.js"></script>
+    <script src="./src/book.js"></script>
+    <script src="./src/card.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBHd-1LFAVCD7cDLYck46D9jYCm_nF8lQ8&callback=init&map_ids=206221e9066e4473&libraries=marker,geometry"></script>
+    <script>
+        console.log("11")
+        init([createMap, bookTab, placeLists, displayCaptured, displayCredits, buttonEvents]);
+        console.log("12")
+    </script>
 </body>
 </html>
