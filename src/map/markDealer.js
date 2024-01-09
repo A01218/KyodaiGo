@@ -27,21 +27,21 @@ class MarkDealer {
     }
 
     deal() {
-        const image = this.#choiceMarkImg();
+        const imageUrl = this.#choiceMarkImgUrl();
         const position = this.#choicePosition();
 
-        return new Mark(image, position);
+        return new Mark(imageUrl, position);
     }
 
-    #choiceMarkImg() {
+    #choiceMarkImgUrl() {
         const kind = this.#choiceKind();
         
         if(kind === KindChara) {
             const chara = this.#choiceChara();
-            return chara.img;
+            return "./imgs/charas/" + chara.img;
         }else {
             const tatekan = this.#choiceTatekan();
-            return tatekan.img;
+            return "./imgs/tatekans/" + tatekan.img;
         }
     }
 

@@ -1,9 +1,9 @@
 class Mark {
-    #image;
-    #position;
+    imageUrl;
+    position;
 
-    constructor(image, position) {
-        this.#image = image;
-        this.#position = position;
+    constructor(imageUrl, position) {
+        this.imageUrl = imageUrl;
+        this.position = position;
     }
 }
