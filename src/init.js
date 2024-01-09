@@ -80,7 +80,6 @@ function loadQuizzes() {
 }
 
 function init(funcArr = []) {
-    console.log('funcArr:', funcArr);
     Promise.all([loadCharas(), loadTatekans(), loadQuizzes()])
         .then(results => {
             [charas, tatekans, quizzes] = results;
