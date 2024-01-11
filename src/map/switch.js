@@ -10,17 +10,16 @@ class Switch {
         const content = document.createElement("img");
         content.className = "obj-mark";
         content.src = mark.imageUrl;
-        const marker = new google.maps.marker.AdvancedMarkerElement({
+        const markerElement = new google.maps.marker.AdvancedMarkerElement({
             map: gmap,
             position: mark.position.getGoogleMapLatLng(),
             content: content,
         });
 
-        marker.addListener("click", function() {
-            onClick(marker);
+        markerElement.addListener("click", function() {
+            onClick(markerElement);
         });
     }
-
 
     placedMarks[i] = {
         pos,
@@ -43,4 +42,21 @@ class Switch {
     setTimeout(() => {
         _removeMark(placedMark, i);
     }, stayTime);
+    
+    #hide(markerElement){
+        markerElement.setMap(null);
+    }
+
+
+        let content = document.createElement("img");
+        content.classList.remove("stay");
+        setTimeout(function() {
+            if(placedMarks[i] === placedMark) {
+                placedMarks[i].mark.setMap(null);
+                placedMarks[i] = null;
+                console.log("消滅", placedMarks)
+                placeMark(i);
+            }
+        }, 700);
+
 }
