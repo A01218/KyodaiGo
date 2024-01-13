@@ -1,12 +1,13 @@
 class Switch {
     #gmap;
     #markDealer;
-    constructor(gmap,markDealer){
+
+    constructor(gmap, markDealer){
         this.#gmap = gmap;
         this.#markDealer = markDealer;
     }
 
-    #display(mark, onClick){
+    #display(mark, onClick) {
         const content = document.createElement("img");
         content.className = "obj-mark";
         content.src = mark.imageUrl;
@@ -27,7 +28,6 @@ class Switch {
         marker,
     };
 
-
     setTimeout(function() {
         content.classList.add("stay");
     }, 500);
@@ -42,21 +42,20 @@ class Switch {
     setTimeout(() => {
         _removeMark(placedMark, i);
     }, stayTime);
+
     
     #hide(markerElement){
         markerElement.setMap(null);
     }
 
-
-        let content = document.createElement("img");
-        content.classList.remove("stay");
-        setTimeout(function() {
-            if(placedMarks[i] === placedMark) {
-                placedMarks[i].mark.setMap(null);
-                placedMarks[i] = null;
-                console.log("消滅", placedMarks)
-                placeMark(i);
-            }
-        }, 700);
-
+    let content = document.createElement("img");
+    content.classList.remove("stay");
+    setTimeout(function() {
+        if(placedMarks[i] === placedMark) {
+            placedMarks[i].mark.setMap(null);
+            placedMarks[i] = null;
+            console.log("消滅", placedMarks)
+            placeMark(i);
+        }
+    }, 700);
 }

@@ -1,7 +1,8 @@
-class Timing{
+class Timing {
     #intervalSec;
     #stayMin;
-    constructor(intervalSec,stayMin){
+
+    constructor(intervalSec, stayMin){
         this.#intervalSec = intervalSec;
         this.#stayMin = stayMin;
     }
@@ -10,14 +11,13 @@ class Timing{
         return Math.random()*(max - min) + min;
     }
     
-    #setInterval(){
-        const[min,max]=this.#intervalSec;
-        return this.#randomNum(min,max);
-        
+    #setInterval() {
+        const [min, max] = this.#intervalSec;
+        return this.#randomNum(min, max);
     }
-    #setStay(){
-        const[min,max]=this.#stayMin;
-        return this.#randomNum(min,max);
-        
+
+    #setStay() {
+        const [min, max] = this.#stayMin;
+        return this.#randomNum(min, max);
     }
 }
