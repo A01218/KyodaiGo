@@ -7,7 +7,7 @@ const RarityLv3 = "Lv3";
 const RarityLvLegend = "LvLegend";
 
 function _choice(arr) {
-    const index = Math.floor(Math.random()*length(arr));
+    const index = Math.floor(Math.random()*arr.length);
     return arr[index];
 }
 
