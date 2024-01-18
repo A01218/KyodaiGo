@@ -1,4 +1,22 @@
 function load() {
+    myLat = 35.026138;
+    myLng = 135.780666;
+    initPos = new Position(myLat, myLng).getGoogleMapLatLng();
+
+    gmap = new google.maps.Map(document.getElementById("map"), {
+        center: initPos,
+        zoom: currentZoom,
+        tilt: 47.5,
+        mapId: "206221e9066e4473",
+        disableDefaultUI: true,
+        keyboardShortcuts: false,
+    });
+
+    mark = new google.maps.Marker({
+        map: gmap,
+        position: initPos,
+    });
+
     charas =
     {
     "Lv1": [
@@ -676,27 +694,9 @@ function initMap() {
 }
 
 function testInit() {
-    myLat = 35.026138;
-    myLng = 135.780666;
-    const initPos = new google.maps.LatLng(myLat, myLng);
 
-    gmap = new google.maps.Map(document.getElementById("map"), {
-        center: initPos,
-        zoom: currentZoom,
-        tilt: 47.5,
-        mapId: "206221e9066e4473",
-        disableDefaultUI: true,
-        keyboardShortcuts: false,
-    });
-
-    mark = new google.maps.Marker({
-        map: gmap,
-        position: initPos,
-    });
+    localStorage.setItem("userName", "kts");
+    getUserInfo();
 
     initMap();
-
-    // mapInterval = setInterval(updateMap, 500);
-
-    // getUserInfo();
 } 

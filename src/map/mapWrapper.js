@@ -10,31 +10,30 @@ class MapWrapper {
         content.className = "obj-mark";
         content.src = mark.imageUrl;
         const markerElement = new google.maps.marker.AdvancedMarkerElement({
-            map: gmap,
+            map: this.#gmap,
             position: mark.position.getGoogleMapLatLng(),
             content: content,
         });
-
+        
         markerElement.addListener("click", function() {
             onClick(markerElement);
         });
 
-        // setTimeout(function() {
-        //     content.classList.add("stay");
-        // }, 500);
+        // contentのレンダリング終了まで0.5秒待ってからフェードイン
+        setTimeout(function() {
+            content.classList.add("stay");
+        }, 500);
 
         return markerElement;
     }
 
     
     hide(markerElement) {
-        // let content = document.createElement("img");
-        // content.classList.remove("stay");
-        // setTimeout(() => {
-        //     content.classList.remove("stay");
-        //     markerElement.setMap(null);
-        // }, 700);
+        markerElement.content.classList.remove("stay");
 
-        markerElement.setMap(null);
+        // contentのフェードアウト終了まで0.7秒待ってからマーカーを非表示
+        setTimeout(() => {
+            markerElement.setMap(null);
+        }, 700);
     }
 }
