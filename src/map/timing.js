@@ -22,7 +22,7 @@ class Timing {
         this.#setStateInterval();
     }
 
-    abort() {
+    reset() {
         switch(this.#state) {
             case 'interval':
                 clearTimeout(this.#intervalTimeoutID);
@@ -33,7 +33,7 @@ class Timing {
                 break;
         }
 
-        this.#setStateInterval();
+        this.run();
     }
 
     #randomNum(min, max) {
@@ -55,10 +55,10 @@ class Timing {
     #setStateInterval() {
         this.#state = 'interval';
 
-        const mark = this.#markDealer.deal();
         const timeout = this.#getIntervalTime();
 
         this.#intervalTimeoutID = setTimeout(() => {
+            const mark = this.#markDealer.deal();
             const markerElement = this.#map.display(mark, this.#onClick);
             this.#setSatateStay(markerElement);
         }, timeout);

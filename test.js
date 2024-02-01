@@ -694,7 +694,6 @@ function initMap() {
 }
 
 function testInit() {
-
     localStorage.setItem("userName", "kts");
     getUserInfo();
 
