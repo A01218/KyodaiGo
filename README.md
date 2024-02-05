@@ -9,6 +9,9 @@ classDiagram
   MapWrapper --> Position
   Timing --> MarkDealer
   Timing --> MapWrapper
+  Area --> Timing
+  Area --> Position
+  
   class Mark {
     Mark(imageUrl, position)
     imageUrl
@@ -27,17 +30,24 @@ classDiagram
     Position(latitude, longitude)
     getGoogleMapLatLng()
     addPolarCoordinate(r, theta)
+    getDistance(position)
   }
   class Timing {
     Timing(intervalSec, stayMin, markDealer, map, onClick)
     run()
     reset()
+    updateMarkDealer(markDealer)
+  }
+  class Area {
+    Area(radius, timings)
+    update(position, markDealer)
   }
 ```
 
 ### Timing
 - run() マークのライフサイクルを開始する。
 - reset() マークのライフサイクルをリセットする。
+- updateMarkDealer(markDealer) markDealerを更新する。
 
 ＊マークのライフサイクルとは、「ランダムな時間後にマップ上のランダムな位置にランダムなマークを表示する。ランダムな時間後にそのマークを非表示する。以後このループを繰り返す」こと。
 
@@ -54,3 +64,7 @@ classDiagram
 ### Position
 - getGoogleMapLatLng() 座標をGoogleMapsAPIで使える形式に変換する。
 - addPolarCoordinate(r, theta) thetaの方角にrだけ離れた座標を取得する。
+- getDistance(position) positionまでの距離を取得する。
+
+### Area
+- update(position, markDealer) 範囲外のマークを削除する。

@@ -20,4 +20,9 @@ class Position {
 
         return new Position(lat, lng);
     }
+
+    getDistance(position) {
+        const distance = google.maps.geometry.spherical.computeDistanceBetween(this.getGoogleMapLatLng(), position.getGoogleMapLatLng());
+        return distance;
+    }
 }

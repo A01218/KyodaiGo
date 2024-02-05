@@ -1,8 +1,9 @@
 function createMap() {
-    navigator.geolocation.getCurrentPosition((position)=>{
-        myLat = position.coords.latitude;
-        myLng = position.coords.longitude;
-        const initPos = new google.maps.LatLng(myLat, myLng);
+    navigator.geolocation.getCurrentPosition((geolocationPosition)=>{
+        myLat = geolocationPosition.coords.latitude;
+        myLng = geolocationPosition.coords.longitude;
+        const position = new Position(myLat, myLng);
+        const initPos = position.getGoogleMapLatLng();
     
         gmap = new google.maps.Map(document.getElementById("map"), {
             center: initPos,
@@ -60,12 +61,20 @@ function createMap() {
             };
         };
 
-        for(let i = 0; i < adjustment().appearance.number; i++) {
-            placeMark(i);
-        };
+        const timings = [];
+        const { radius, rate, stayMin, intervalSec } = adjustment().appearance;
+
+        const markDealer = new MarkDealer(position, rate, radius, charas, tatekans);
+        const map = new MapWrapper(gmap);
+        const onClick = () => alert("clicked");
+        for (let i = 0; i < adjustment().appearance.number; i++) {
+            const timing = new Timing(intervalSec, stayMin, markDealer, map, onClick);
+            timings[i] = timing;
+            timing.run();
+        }
     
         mapInterval = setInterval(updateMap, 500);
-        updateObjs();
+        updateObjs(new Area(radius, timings));
 
         getUserInfo();
 
@@ -181,11 +190,10 @@ function updateMap() {
     };
 }
 
-function updateObjs() {
-    navigator.geolocation.watchPosition((position)=>{
-        myLat = position.coords.latitude;
-        myLng = position.coords.longitude;
-        myPos = new google.maps.LatLng(myLat, myLng);
+function updateObjs(area) {
+    navigator.geolocation.watchPosition((geolocationPosition)=>{
+        myLat = geolocationPosition.coords.latitude;
+        myLng = geolocationPosition.coords.longitude;
 
         // console.log("シルエットの更新")
         // for(let i = 0; i < placedMarks.length; i++) {
@@ -205,18 +213,11 @@ function updateObjs() {
         //     };
         // };
 
-        for(let i = 0; i < placedMarks.length; i++) {
-            if(placedMarks[i]) {
-                let distance = google.maps.geometry.spherical.computeDistanceBetween(myPos, mark.position);
-                if(distance > 50) {
-                    content.classList.remove("stay");
-                    placedMarks[i].mark.setMap(null);
-                    placedMarks[i] = null;
-                    console.log("消滅", placedMarks)
-                    placeMark(i);
-                };
-            };
-        };
+        const position = new Position(myLat, myLng);
+        const { radius, rate } = adjustment().appearance;
+
+        const markDealer = new MarkDealer(position, rate, radius, charas, tatekans);
+        area.update(position, markDealer);
     }, () => {
         console.log("位置情報の取得に失敗");                        
     }, {

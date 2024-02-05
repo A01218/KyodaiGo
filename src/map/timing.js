@@ -4,6 +4,7 @@ class Timing {
     #markDealer;
     #map;
     #onClick;
+    mark;
 
     #state = undefined;
     #intervalTimeoutID = undefined;
@@ -30,6 +31,7 @@ class Timing {
             case 'stay':
                 clearTimeout(this.#stayTimeoutID);
                 this.#map.hide(this.#markerElement);
+                this.mark = undefined;
                 break;
         }
 
@@ -58,8 +60,8 @@ class Timing {
         const timeout = this.#getIntervalTime();
 
         this.#intervalTimeoutID = setTimeout(() => {
-            const mark = this.#markDealer.deal();
-            const markerElement = this.#map.display(mark, this.#onClick);
+            this.mark = this.#markDealer.deal();
+            const markerElement = this.#map.display(this.mark, this.#onClick);
             this.#setSatateStay(markerElement);
         }, timeout);
     }
@@ -72,7 +74,12 @@ class Timing {
 
         this.#stayTimeoutID = setTimeout(() => {
             this.#map.hide(this.#markerElement);
+            this.mark = undefined;
             this.#setStateInterval();
         }, timeout);
+    }
+
+    updateMarkDealer(markDealer) {
+        this.#markDealer = markDealer;
     }
 }
