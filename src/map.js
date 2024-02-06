@@ -86,111 +86,6 @@ function createMap() {
     });
 } 
 
-function _randomPos() {
-    const { radius } = adjustment().appearance;
-    const r = Math.random()*radius;
-    const theta = (Math.random()*360)*(Math.PI/180);
-    const R = 6371008;
-    const lat = myLat + (Math.floor((r*Math.sin(theta)*180)/(R*Math.PI)*10000000))/10000000;
-    const lng = myLng + Math.floor((r*Math.cos(theta)*180)/(R*Math.cos(myLat*(Math.PI/180))*Math.PI)*10000000)/10000000;
-    
-    return [lat, lng];
-}
-
-function _randomNum(min, max) {
-    return Math.random()*(max - min) + min;
-}
-
-function _randomObj() {
-    const { rate } = adjustment().appearance;
-    const num = Math.floor(Math.random()*1000);
-    if(num < rate.tatekan*10) {
-        return "tatekan";
-    }else if(num < (rate.tatekan + rate.Lv1)*10) {
-        return "Lv1";
-    }else if(num < (rate.tatekan + rate.Lv1 + rate.Lv2)*10) {
-        return "Lv2";
-    }else if(num < (rate.tatekan + rate.Lv1 + rate.Lv2 + rate.Lv3)*10) {
-        return "Lv3";
-    }else{
-        return "LvLegend";
-    }
-}
-
-function _removeMark(placedMark, i) {
-    let content = document.createElement("img");
-    content.classList.remove("stay");
-    setTimeout(function() {
-        if(placedMarks[i] === placedMark) {
-            placedMarks[i].mark.setMap(null);
-            placedMarks[i] = null;
-            console.log("消滅", placedMarks)
-            placeMark(i);
-        }
-    }, 700);
-}
-
-function _showMark(i) {
-    let pos = _randomPos();
-    let diff = _randomObj();
-    let obj;
-    let content = document.createElement("img");
-    content.className = "obj-mark";
-    if(diff === "tatekan") {
-        obj = tatekans[Math.floor(Math.random()*(tatekans.length))];
-        content.src = "./imgs/tatekans/" + obj.img;
-    }else{
-        obj = charas[diff][Math.floor(Math.random()*(charas[diff].length))];
-        content.src = "./imgs/charas/" + obj.img;
-    };
-    let mark = new google.maps.marker.AdvancedMarkerElement({
-        map: gmap,
-        position: new google.maps.LatLng(pos[0], pos[1]),
-        content: content,
-    });
-    placedMarks[i] = {
-        pos,
-        obj,
-        mark,
-    };
-
-    mark.addListener("click", function() {
-        objMarkClick(placedMarks[i]); 
-    });
-
-    setTimeout(function() {
-        content.classList.add("stay");
-    }, 500);
-
-    console.log("出現", placedMarks);
-    
-    let placedMark = placedMarks[i];
-
-    const { stayMin } = adjustment().appearance;
-    const stayTime = _randomNum(stayMin[0], stayMin[1])*60*1000;
-
-    setTimeout(() => {
-        _removeMark(placedMark, i);
-    }, stayTime);
-}
-
-function placeMark(i) {
-    const { intervalSec } = adjustment().appearance;
-    
-    const intervalTime = _randomNum(intervalSec[0], intervalSec[1])*1000;
-
-    setTimeout(() => _showMark(i), intervalTime);
-}
-
-function updateMap() {
-    gmap.setCenter(myPos);
-    mark.setPosition(myPos);
-    
-    if(gmap.getZoom() < 19) {
-        gmap.setZoom(19);
-    };
-}
-
 function updateObjs(area) {
     navigator.geolocation.watchPosition((geolocationPosition)=>{
         const myLat = geolocationPosition.coords.latitude;
@@ -225,4 +120,21 @@ function updateObjs(area) {
     }, {
         enableHighAccuracy: true               
     });
+}
+
+function updateMap() {
+    gmap.setCenter(myPos);
+    mark.setPosition(myPos);
+    
+    if(gmap.getZoom() < 19) {
+        gmap.setZoom(19);
+    };
+}
+
+function placeMark(i) {
+    const { intervalSec } = adjustment().appearance;
+    
+    const intervalTime = _randomNum(intervalSec[0], intervalSec[1])*1000;
+
+    setTimeout(() => _showMark(i), intervalTime);
 }
