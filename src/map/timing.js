@@ -61,7 +61,7 @@ class Timing {
 
         this.#intervalTimeoutID = setTimeout(() => {
             this.mark = this.#markDealer.deal();
-            const markerElement = this.#map.display(this.mark, this.#onClick);
+            const markerElement = this.#map.display(this.mark, () => this.#onClick(this));
             this.#setSatateStay(markerElement);
         }, timeout);
     }

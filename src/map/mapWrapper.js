@@ -15,9 +15,7 @@ class MapWrapper {
             content: content,
         });
         
-        markerElement.addListener("click", function() {
-            onClick(markerElement);
-        });
+        markerElement.addListener("click", onClick);
 
         // contentのレンダリング終了まで0.5秒待ってからフェードイン
         setTimeout(function() {

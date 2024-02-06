@@ -62,14 +62,14 @@ function createMap() {
             };
         };
 
-        const timings = [];
+        // TODO: timingsをローカル変数にする
+        // const timings = [];
         const { radius, rate, stayMin, intervalSec } = adjustment().appearance;
 
         const markDealer = new MarkDealer(position, rate, radius, charas, tatekans);
         const map = new MapWrapper(gmap);
-        const onClick = () => alert("clicked");
         for (let i = 0; i < adjustment().appearance.number; i++) {
-            const timing = new Timing(intervalSec, stayMin, markDealer, map, onClick);
+            const timing = new Timing(intervalSec, stayMin, markDealer, map, objMarkClick);
             timings[i] = timing;
             timing.run();
         }

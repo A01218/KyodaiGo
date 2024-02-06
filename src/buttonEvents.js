@@ -27,21 +27,17 @@ function profileButtonClick() {
 }
 
 function getFunc() {
-    if(identifyObj(focusedObj)[0] === "chara") {
-        capturedCharas[focusedObj.number-1] = "1";
+    const mark = focusedTiming.mark;
+    if(mark.kind === "chara") {
+        capturedCharas[mark.number-1] = "1";
         localStorage.setItem("capturedCharas", JSON.stringify(capturedCharas));
-    }else if(identifyObj(focusedObj)[0] === "tatekan") {
-        capturedTatekans[focusedObj.number-1] = "2";
+    }else if(mark.kind === "tatekan") {
+        capturedTatekans[mark.number-1] = "2";
         localStorage.setItem("capturedTatekans", JSON.stringify(capturedTatekans));
     };
     (function() {
-        let i = placedMarks.indexOf(focusedMark);
-        if(placedMarks[i] === focusedMark) {
-            focusedMark.mark.setMap(null);
-            placedMarks[i] = null;
-            console.log("消滅", placedMarks)
-            placeMark(i);
-        };
+        console.log("消滅", timings);
+        focusedTiming.reset();
     })();
 
     const moveButton = document.getElementById("moveButton");
@@ -52,11 +48,12 @@ function getFunc() {
     moveButton.style.display = "block";
     displayCaptured();
 
-    console.log("get!" + focusedObj.number) //get! オブジェクト名
+    console.log("get!" + mark.number) //get! オブジェクト名
     console.log(capturedCharas, capturedTatekans); //これまでに捕まえたオブジェクトの情報
 }
 
 function backFunc() {
+    const mark = focusedTiming.mark;
     const moveButton = document.getElementById("moveButton");
     const battlePart = document.getElementById("battlePart");
     const quizDiv = document.getElementById("quizDiv");
@@ -66,7 +63,7 @@ function backFunc() {
     moveButton.style.display = "block";
     focusImg.classList.remove("bounce");
 
-    console.log("miss!" + focusedObj.number) //miss! オブジェクト番号
+    console.log("miss!" + mark.number) //miss! オブジェクト番号
     console.log(capturedCharas, capturedTatekans); //これまでに捕まえたキャラの情報
 }
 

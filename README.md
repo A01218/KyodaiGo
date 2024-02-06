@@ -14,6 +14,10 @@ classDiagram
   
   class Mark {
     Mark(imageUrl, position)
+    number
+    name
+    rarity
+    kind
     imageUrl
     position
   }

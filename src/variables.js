@@ -4,11 +4,10 @@ let gmap, mark;
 let currentZoom = 19;
 let myPos;
 let mapInterval;
-let placedMarks = [];
+let timings = [];
 let mapPartDisplay;
 
-let focusedMark;
-let focusedObj;
+let focusedTiming;
 let capturedCharas = [];
 let capturedTatekans = [];
 let quiz;

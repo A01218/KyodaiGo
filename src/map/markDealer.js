@@ -27,22 +27,31 @@ class MarkDealer {
     }
 
     deal() {
-        const imageUrl = this.#choiceMarkImgUrl();
-        const position = this.#choicePosition();
-
-        return new Mark(imageUrl, position);
-    }
-
-    #choiceMarkImgUrl() {
         const kind = this.#choiceKind();
+        const position = this.#choicePosition();
         
+        let number;
+        let name;
+        let rarity;
+        let imageUrl;
+
         if(kind === KindChara) {
-            const chara = this.#choiceChara();
-            return "./imgs/charas/" + chara.img;
+            rarity = this.#choiceCharaRarity();
+
+            const chara = _choice(this.#charas[rarity]);
+            number = chara.number;
+            name = chara.name;
+            imageUrl = "./imgs/charas/" + chara.img;
         }else {
-            const tatekan = this.#choiceTatekan();
-            return "./imgs/tatekans/" + tatekan.img;
+            rarity = "tatekan";
+
+            const tatekan = _choice(this.#tatekans);
+            number = tatekan.number;
+            name = tatekan.name;
+            imageUrl =  "./imgs/tatekans/" + tatekan.img;
         }
+
+        return new Mark(number, name, rarity, kind, imageUrl, position);
     }
 
     #choiceKind() {
@@ -52,12 +61,6 @@ class MarkDealer {
         }else {
             return KindChara;
         }
-    }
-
-    #choiceChara() {
-        const charaRarity = this.#choiceCharaRarity();
-        const chara = _choice(this.#charas[charaRarity]);
-        return chara;
     }
 
     #choiceCharaRarity() { 
@@ -72,11 +75,6 @@ class MarkDealer {
         }else {
             return RarityLvLegend;
         }
-    }
-
-    #choiceTatekan() {
-        const tatekan = _choice(this.#tatekans);
-        return tatekan;
     }
 
     #choicePosition() {

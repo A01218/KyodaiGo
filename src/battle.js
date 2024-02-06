@@ -1,26 +1,10 @@
-function identifyObj(obj) {
-    let kind, diff;
-    if(obj.hasOwnProperty("type")) {
-        kind = "chara"
-        for(let i = 0; i < Object.keys(charas).length; i++) {
-            if(Object.values(charas)[i].find(chara => chara.number === obj.number)) {
-                diff = Object.keys(charas)[i];
-            };
-        };
-    }else {
-        kind = "tatekan";
-        diff = "tatekan";
-    };
-    return [kind, diff];
-}
-
-function objMarkClick(placedMark) {
+function objMarkClick(timing) {
+    const mark = timing.mark;
     const moveButton = document.getElementById("moveButton");
     const profileButton = document.getElementById("profileButton");
 
-    console.log("focus!"+placedMark.obj.number);
-    focusedMark = placedMark;
-    focusedObj = placedMark.obj;
+    console.log("focus!" + mark.number);
+    focusedTiming = timing;
     correctAns = 0;
     wrongAns = 0;
     moveButton.style.display = "none";
@@ -35,8 +19,7 @@ function objMarkClick(placedMark) {
     overlayStyle.display = "block";
 
     clearInterval(mapInterval);
-    const position = new google.maps.LatLng(placedMark.pos[0], placedMark.pos[1]);
-    gmap.panTo(position);
+    gmap.panTo(mark.position.getGoogleMapLatLng());
     function zoomIn() {
         if(currentZoom < 23) {
             currentZoom += 0.3;
@@ -48,13 +31,12 @@ function objMarkClick(placedMark) {
                 escapeButton.style.display = "flex";
                 battlePart.style.display = "flex";
                 quizReload();
-                if(identifyObj(focusedObj)[0] === "chara") {
-                    focusImg.src = "./imgs/charas/" + focusedObj.img;
-                    encounterLog.innerText = "野生の " + focusedObj.name + " が現れた!";
+
+                focusImg.src = mark.imageUrl;
+                if(mark.kind === "chara") {
+                    encounterLog.innerText = "野生の " + mark.name + " が現れた!";
                     encountFunc(400, 1700);
-                }else if(identifyObj(focusedObj)[0] === "tatekan") {
-                    focusImg.src = "./imgs/tatekans/" + focusedObj.img;
-                };
+                }
                 setTimeout(function() {
                     focusImg.classList.add("bounce");
                 }, 450);
@@ -97,9 +79,12 @@ function quizReload() {
     const opt2 = document.getElementById("opt2");
     const opt3 = document.getElementById("opt3");
     const opt4 = document.getElementById("opt4");
-    const charaLv = identifyObj(focusedObj)[1];
-    const quizArr = adjustment().difficulty[charaLv];
+
+    const mark = focusedTiming.mark;
+    const charaLv = mark.rarity;
+    const quizArr = adjustment().rarity[charaLv];
     console.log(charaLv);
+
     function quizFunc(quiz) {
         let numArr = [0, 1, 2, 3]
         let randomArr = []
@@ -124,11 +109,11 @@ function quizReload() {
     if(correctAns === quizArr.length) {
         escapeButton.style.display = "none";
         quizDiv.style.display = "none";
-        if(identifyObj(focusedObj)[0] === "chara") {
+        if(focusedTiming.mark.kind === "chara") {
             setTimeout(function() {
                 focusImg.classList.remove("bounce");
             }, 150);
-            encounterLog.innerText = "クイズを出してこないようだ…。\n" + focusedObj.name + " と仲良くなった！";
+            encounterLog.innerText = "クイズを出してこないようだ…。\n" + mark.name + " と仲良くなった！";
             encountFunc(200, 2000);
             setTimeout(function() {
                 getObjSound.play();
@@ -140,7 +125,7 @@ function quizReload() {
                 localStorage.setItem("creditNum", creditNum);
                 displayCredits();
                 setTimeout(function() {
-                    encounterLog.innerText = focusedObj.name + " から " + credit + "単位 もらった！";
+                    encounterLog.innerText = mark.name + " から " + credit + "単位 もらった！";
                     encountFunc(0, 1800);
                 }, 2800);
                 setTimeout(function() {
@@ -154,8 +139,8 @@ function quizReload() {
                     getFunc();
                 }, 3000);
             };
-        }else if(identifyObj(focusedObj)[0] === "tatekan") {
-            encounterLog.innerText = focusedObj.name + " を見つけた!";
+        }else if(mark.kind === "tatekan") {
+            encounterLog.innerText = mark.name + " を見つけた!";
             encountFunc(600, 3000);
             setTimeout(function() {
                 getObjSound.play();
@@ -164,10 +149,10 @@ function quizReload() {
                 getFunc();
             }, 4600);
         };
-    }else if(wrongAns === adjustment().escapeTurns[Object.keys(adjustment().difficulty).find(key => adjustment().difficulty[key] === quizArr)]) {
+    }else if(wrongAns === adjustment().escapeTurns[Object.keys(adjustment().rarity).find(key => adjustment().rarity[key] === quizArr)]) {
         escapeButton.style.display = "none";
         quizDiv.style.display = "none";
-        encounterLog.innerText = focusedObj.name + " に逃げられた…";
+        encounterLog.innerText = mark.name + " に逃げられた…";
         encountFunc(1500, 2000);
         setTimeout(function() {
             focusImg.classList.remove("bounce");
@@ -177,13 +162,8 @@ function quizReload() {
         }, 300);
         setTimeout(function() {
             (function() {
-                let i = placedMarks.indexOf(focusedMark);
-                if(placedMarks[i] === focusedMark) {
-                    focusedMark.mark.setMap(null);
-                    placedMarks[i] = null;
-                    console.log("消滅", placedMarks)
-                    placeMark(i);
-                };
+                console.log("消滅", timing);
+                focusedTiming.reset();
             })();
             backFunc();
             focusImg.classList.remove("disappear");

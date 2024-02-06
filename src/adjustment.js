@@ -13,7 +13,7 @@ function adjustment() {
                 LvLegend: 0.5
             }
         },
-        difficulty: {
+        rarity: {
             tatekan:  [],
             Lv1:      ["A"],
             Lv2:      ["A", "B"],

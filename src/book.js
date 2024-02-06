@@ -1,3 +1,19 @@
+function identifyObj(obj) {
+    let kind, diff;
+    if(obj.hasOwnProperty("type")) {
+        kind = "chara"
+        for(let i = 0; i < Object.keys(charas).length; i++) {
+            if(Object.values(charas)[i].find(chara => chara.number === obj.number)) {
+                diff = Object.keys(charas)[i];
+            };
+        };
+    }else {
+        kind = "tatekan";
+        diff = "tatekan";
+    };
+    return [kind, diff];
+}
+
 function bookTab() {
     const charaTab = document.getElementById("charaTab");
     const tatekanTab = document.getElementById("tatekanTab");
