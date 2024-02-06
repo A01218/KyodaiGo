@@ -2,7 +2,7 @@ let charas, allCharas, tatekans, quizzes;
 
 let gmap, mark;
 let currentZoom = 19;
-let myLat, myLng, myPos;
+let myPos;
 let mapInterval;
 let placedMarks = [];
 let mapPartDisplay;

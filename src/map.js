@@ -1,9 +1,10 @@
 function createMap() {
     navigator.geolocation.getCurrentPosition((geolocationPosition)=>{
-        myLat = geolocationPosition.coords.latitude;
-        myLng = geolocationPosition.coords.longitude;
+        const myLat = geolocationPosition.coords.latitude;
+        const myLng = geolocationPosition.coords.longitude;
         const position = new Position(myLat, myLng);
         const initPos = position.getGoogleMapLatLng();
+        myPos = initPos;
     
         gmap = new google.maps.Map(document.getElementById("map"), {
             center: initPos,
@@ -72,7 +73,7 @@ function createMap() {
             timings[i] = timing;
             timing.run();
         }
-    
+
         mapInterval = setInterval(updateMap, 500);
         updateObjs(new Area(radius, timings));
 
@@ -192,8 +193,10 @@ function updateMap() {
 
 function updateObjs(area) {
     navigator.geolocation.watchPosition((geolocationPosition)=>{
-        myLat = geolocationPosition.coords.latitude;
-        myLng = geolocationPosition.coords.longitude;
+        const myLat = geolocationPosition.coords.latitude;
+        const myLng = geolocationPosition.coords.longitude;
+        const position = new Position(myLat, myLng);
+        myPos = position.getGoogleMapLatLng();
 
         // console.log("シルエットの更新")
         // for(let i = 0; i < placedMarks.length; i++) {
@@ -213,7 +216,6 @@ function updateObjs(area) {
         //     };
         // };
 
-        const position = new Position(myLat, myLng);
         const { radius, rate } = adjustment().appearance;
 
         const markDealer = new MarkDealer(position, rate, radius, charas, tatekans);
