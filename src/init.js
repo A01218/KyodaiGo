@@ -79,14 +79,19 @@ function loadQuizzes() {
     });
 }
 
-function init(funcArr = []) {
+function init() {
     Promise.all([loadCharas(), loadTatekans(), loadQuizzes()])
         .then(results => {
             [charas, tatekans, quizzes] = results;
             allCharas = [...charas.Lv1, ...charas.Lv2, ...charas.Lv3, ...charas.LvLegend];
-            funcArr.forEach(func => {
-                func();
-            });
+            loadUserInfo();
+
+            createMap();
+            bookTab();
+            placeLists();
+            displayCaptured();
+            displayCredits();
+            buttonEvents();
         })
         .catch(error => {
             console.error('Error loading data:', error);

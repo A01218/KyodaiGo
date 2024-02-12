@@ -76,9 +76,6 @@ function createMap() {
 
         mapInterval = setInterval(updateMap, 500);
         updateObjs(new Area(radius, timings));
-
-        getUserInfo();
-
     }, () => {
         console.error("位置情報の取得に失敗");
     }, {

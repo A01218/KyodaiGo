@@ -16,7 +16,7 @@ function startOpening() {
     }, 1500);
 }
 
-function getUserInfo() {
+function loadUserInfo() {
     const startPart = document.getElementById("startPart");
     const profileNameText = document.getElementById("profileNameText");
     const profileNameInput = document.getElementById("profileNameInput");
