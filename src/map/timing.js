@@ -74,6 +74,7 @@ class Timing {
 
         this.#stayTimeoutID = setTimeout(() => {
             this.#map.hide(this.#markerElement);
+            console.log(this.mark, "非表示");
             this.mark = undefined;
             this.#setStateInterval();
         }, timeout);

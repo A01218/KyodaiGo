@@ -5,6 +5,7 @@ function objMarkClick(timing) {
 
     console.log("focus!" + mark.number);
     focusedTiming = timing;
+    focusedMark = mark;
     correctAns = 0;
     wrongAns = 0;
     moveButton.style.display = "none";
@@ -80,8 +81,7 @@ function quizReload() {
     const opt3 = document.getElementById("opt3");
     const opt4 = document.getElementById("opt4");
 
-    const mark = focusedTiming.mark;
-    const charaLv = mark.rarity;
+    const charaLv = focusedMark.rarity;
     const quizArr = adjustment().rarity[charaLv];
     console.log(charaLv);
 
@@ -109,11 +109,11 @@ function quizReload() {
     if(correctAns === quizArr.length) {
         escapeButton.style.display = "none";
         quizDiv.style.display = "none";
-        if(focusedTiming.mark.kind === "chara") {
+        if(focusedMark.kind === "chara") {
             setTimeout(function() {
                 focusImg.classList.remove("bounce");
             }, 150);
-            encounterLog.innerText = "クイズを出してこないようだ…。\n" + mark.name + " と仲良くなった！";
+            encounterLog.innerText = "クイズを出してこないようだ…。\n" + focusedMark.name + " と仲良くなった！";
             encountFunc(200, 2000);
             setTimeout(function() {
                 getObjSound.play();
@@ -125,7 +125,7 @@ function quizReload() {
                 localStorage.setItem("creditNum", creditNum);
                 displayCredits();
                 setTimeout(function() {
-                    encounterLog.innerText = mark.name + " から " + credit + "単位 もらった！";
+                    encounterLog.innerText = focusedMark.name + " から " + credit + "単位 もらった！";
                     encountFunc(0, 1800);
                 }, 2800);
                 setTimeout(function() {
@@ -139,8 +139,8 @@ function quizReload() {
                     getFunc();
                 }, 3000);
             };
-        }else if(mark.kind === "tatekan") {
-            encounterLog.innerText = mark.name + " を見つけた!";
+        }else if(focusedMark.kind === "tatekan") {
+            encounterLog.innerText = focusedMark.name + " を見つけた!";
             encountFunc(600, 3000);
             setTimeout(function() {
                 getObjSound.play();
@@ -152,7 +152,7 @@ function quizReload() {
     }else if(wrongAns === adjustment().escapeTurns[Object.keys(adjustment().rarity).find(key => adjustment().rarity[key] === quizArr)]) {
         escapeButton.style.display = "none";
         quizDiv.style.display = "none";
-        encounterLog.innerText = mark.name + " に逃げられた…";
+        encounterLog.innerText = focusedMark.name + " に逃げられた…";
         encountFunc(1500, 2000);
         setTimeout(function() {
             focusImg.classList.remove("bounce");

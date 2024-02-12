@@ -8,6 +8,7 @@ let timings = [];
 let mapPartDisplay;
 
 let focusedTiming;
+let focusedMark;
 let capturedCharas = [];
 let capturedTatekans = [];
 let quiz;
