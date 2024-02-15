@@ -249,4 +249,10 @@ function moveButtonClick() {
         bgLogo.style.display = "none";
         click1Sound.play();
     }
+    
+    if(profileNameInput.value === "RstMyDt-色s") {
+        localStorage.clear();
+        profileNameText.innerText = null;
+        console.log("すべての保存データを削除");
+    };
 }

@@ -23,27 +23,21 @@ function loadUserInfo() {
     const profileButton = document.getElementById("profileButton");
     const profileImg = document.getElementById("profileImg");
 
-    if(localStorage.getItem("capturedCharas")) {
-        capturedCharas = JSON.parse(localStorage.getItem("capturedCharas"));
-    };
-    if(localStorage.getItem("capturedTatekans")) {
-        capturedTatekans = JSON.parse(localStorage.getItem("capturedTatekans"));
-    };
-
-    if(localStorage.getItem("userName")) {
-        mapPartDisplay = true;
-        startPart.style.display = "none";
-        profileNameText.innerText = localStorage.getItem("userName");
-        profileNameInput.value = localStorage.getItem("userName");
-    }else {
+    const user = User.load();
+    if(!user) {
         startOpening();
-    };
+        return;
+    }
+
+    capturedCharas = user.capturedCharas;
+    capturedTatekans = user.capturedTatekans;
+    mapPartDisplay = true;
+    startPart.style.display = "none";
+    profileNameText.innerText = user.name;
+    profileNameInput.value = user.name;
+
     if(localStorage.getItem("userImg")) {
         profileButton.src = localStorage.getItem("userImg");
         profileImg.src = localStorage.getItem("userImg");
     };
-    if(!localStorage.getItem("creditNum")) {
-        localStorage.setItem("creditNum", creditNum);
-    };
-    creditNum = parseInt(localStorage.getItem("creditNum"), 10);
 }

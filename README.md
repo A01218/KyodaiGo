@@ -72,3 +72,14 @@ classDiagram
 
 ### Area
 - update(position, markDealer) 範囲外のマークを削除する。
+
+
+```mermaid
+classDiagram
+
+  
+  class User {
+    User(name, credit, capturedCharas, capturedTatekans)
+    load()$
+  }
+```
