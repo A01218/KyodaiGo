@@ -7,11 +7,14 @@ function startButtonClick() {
     if(startNameInput.value === "") {
         startAnnounce.style.display = "block";
     }else {
+        const name = startNameInput.value;
         mapPartDisplay = true;
         startPart.style.display = "none";
-        profileNameText.innerText = startNameInput.value;
-        profileNameInput.value = profileNameText.innerText;
-        localStorage.setItem("userName", profileNameText.innerText);
+        profileNameText.innerText = name;
+        profileNameInput.value = name;
+
+        user = User.register(name);
+
         startAnnounce.style.display = "none";
     };
 }
@@ -28,11 +31,9 @@ function profileButtonClick() {
 
 function getFunc() {
     if(focusedMark.kind === "chara") {
-        capturedCharas[focusedMark.number-1] = "1";
-        localStorage.setItem("capturedCharas", JSON.stringify(capturedCharas));
+        user.addChara(focusedMark);
     }else if(focusedMark.kind === "tatekan") {
-        capturedTatekans[focusedMark.number-1] = "2";
-        localStorage.setItem("capturedTatekans", JSON.stringify(capturedTatekans));
+        user.addTatekan(focusedMark);
     };
     (function() {
         console.log("消滅", timings);
@@ -86,14 +87,16 @@ function editButtonClick() {
         if(profileNameInput.value === "") {
             profileAnnounce.style.display = "block";
         }else {
+            const name = profileNameInput.value;
             editImg.src = "./imgs/others/setting.PNG";
             editImg.style.height = "100%";
             profileInput.style.display = "none";
             profileNameInput.style.display = "none";
             profileNameText.style.display = "block";
-            profileNameText.innerText = profileNameInput.value;
-            profileNameInput.value = profileNameText.innerText;
-            localStorage.setItem("userName", profileNameText.innerText);
+            profileNameText.innerText = name;
+
+            user.updateName(name);
+
             profileAnnounce.style.display = "none";
             inquery.style.display = "none";
             click1Sound.play();
@@ -101,7 +104,7 @@ function editButtonClick() {
     }
 
     if(profileNameInput.value === "RstMyDt-色s") {
-        localStorage.clear();
+        user.delete();
         profileNameText.innerText = null;
         console.log("すべての保存データを削除");
     };

@@ -16,3 +16,5 @@ let correctAns, wrongAns;
 
 let creditNum = 0;
 let myDegree;
+
+let user;

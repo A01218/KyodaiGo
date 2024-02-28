@@ -121,8 +121,7 @@ function quizReload() {
 
             let credit = adjustment().credits[myDegree][charaLv];
             if(credit !== 0) {
-                creditNum = creditNum + credit;
-                localStorage.setItem("creditNum", creditNum);
+                user.addCredit(credit);
                 displayCredits();
                 setTimeout(function() {
                     encounterLog.innerText = focusedMark.name + " から " + credit + "単位 もらった！";
@@ -218,6 +217,7 @@ function moveButtonClick() {
         if(profileNameInput.value === "") {
             profileAnnounce.style.display = "block";
         }else {
+            const name = profileNameInput.value;
             mapPartDisplay = true;
             moveButton.src = "./imgs/others/book.png";
             profilePart.style.display = "none";
@@ -229,8 +229,10 @@ function moveButtonClick() {
             profileInput.style.display = "none";
             profileNameInput.style.display = "none";
             profileNameText.style.display = "block";
-            profileNameText.innerText = profileNameInput.value;
-            localStorage.setItem("userName", profileNameText.innerText);
+
+            profileNameText.innerText = name;
+            user.updateName(name);
+
             profileAnnounce.style.display = "none";
             inquery.style.display = "none";
             click4Sound.play();
@@ -251,7 +253,7 @@ function moveButtonClick() {
     }
     
     if(profileNameInput.value === "RstMyDt-色s") {
-        localStorage.clear();
+        user.delete();
         profileNameText.innerText = null;
         console.log("すべての保存データを削除");
     };

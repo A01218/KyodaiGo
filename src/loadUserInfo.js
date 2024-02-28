@@ -23,14 +23,13 @@ function loadUserInfo() {
     const profileButton = document.getElementById("profileButton");
     const profileImg = document.getElementById("profileImg");
 
-    const user = User.load();
-    if(!user) {
+    if(!User.exist()) {
         startOpening();
         return;
     }
 
-    capturedCharas = user.capturedCharas;
-    capturedTatekans = user.capturedTatekans;
+    user = User.load();
+
     mapPartDisplay = true;
     startPart.style.display = "none";
     profileNameText.innerText = user.name;
